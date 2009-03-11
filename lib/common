@@ -16,3 +16,8 @@ def ifIE( version='' ):
     $
     '<![endif]-->'
 
+def jquery():
+    javascript:
+        "jQuery(document).ready(function() {
+        $
+        "});
