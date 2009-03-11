@@ -1,0 +1,361 @@
+
+################################################################################
+# 4.1 The root element
+################################################################################
+
+def html():
+    tag('html', $undeclared): $
+
+################################################################################
+# 4.2 Document Metadata
+################################################################################
+
+def head():
+    tag('head', $undeclared): $
+
+def title():
+    tag('title', $undeclared): $
+
+def base():
+    tag('base', $undeclared): $
+
+def link():
+    tag('link', $undeclared): $
+
+def meta():
+    tag('meta', $undeclared): $
+
+def style():
+    tag('style', $undeclared): $
+
+################################################################################
+# 4.3 Scripting
+################################################################################
+
+def script():
+    tag('script', $undeclared): $
+
+def noscript():
+    tag('noscript', $undeclared): $
+
+################################################################################
+# 4.4 Sections
+################################################################################
+
+def body():
+    tag('body', $undeclared): $
+
+def section():
+    tag('section', $undeclared): $
+
+def nav():
+    tag('nav', $undeclared): $
+
+def article():
+    tag('article', $undeclared): $
+
+def aside():
+    tag('aside', $undeclared): $
+
+def h( n='1' ):
+    tag('h' n, $undeclared): $
+
+def h1():
+    h('1', $undeclared): $
+def h2():
+    h('2', $undeclared): $
+def h3():
+    h('3', $undeclared): $
+def h4():
+    h('4', $undeclared): $
+def h5():
+    h('5', $undeclared): $
+def h6():
+    h('6', $undeclared): $
+
+def header():
+    tag('header', $undeclared): $
+
+def footer():
+    tag('footer', $undeclared): $
+
+def address():
+    tag('address', $undeclared): $
+
+################################################################################
+# 4.5 Grouping content
+################################################################################
+
+def p():
+    tag('p', $undeclared): $
+
+def hr():
+    tag('hr', $undeclared): $
+
+def br(): '<br>'
+
+def pre():
+    tag('pre', $undeclared): $
+
+def dialog():
+    tag('dialog', $undeclared): $
+
+def blockquote():
+    tag('blockquote', $undeclared): $
+
+def ol():
+    tag('ol', $undeclared): $
+
+def ul():
+    tag('ul', $undeclared): $
+
+def li():
+    tag('li', $undeclared): $
+
+def dl():
+    tag('dl', $undeclared): $
+
+def dt():
+    tag('dt', $undeclared): $
+
+def dd():
+    tag('dd', $undeclared): $
+
+################################################################################
+# 4.6 Text-level semantics
+################################################################################
+
+def a():
+    tag('a', $undeclared): $
+
+def q():
+    tag('q', $undeclared): $
+
+def cite():
+    tag('cite', $undeclared): $
+
+def em():
+    tag('em', $undeclared): $
+
+def strong():
+    tag('strong', $undeclared): $
+
+def small():
+    tag('small', $undeclared): $
+
+def mark():
+    tag('mark', $undeclared): $
+
+def dfn():
+    tag('dfn', $undeclared): $
+
+def abbr():
+    tag('abbr', $undeclared): $
+
+def time():
+    tag('time', $undeclared): $
+
+def progress():
+    tag('progress', $undeclared): $
+
+def meter():
+    tag('meter', $undeclared): $
+
+def code():
+    tag('code', $undeclared): $
+
+def var():
+    tag('var', $undeclared): $
+
+def samp():
+    tag('samp', $undeclared): $
+
+def kbd():
+    tag('kbd', $undeclared): $
+
+def sub():
+    tag('sub', $undeclared): $
+
+def sup():
+    tag('sup', $undeclared): $
+
+def span():
+    tag('span', $undeclared): $
+
+def i():
+    tag('i', $undeclared): $
+
+def b():
+    tag('b', $undeclared): $
+
+def bdo():
+    tag('bdo', $undeclared): $
+
+def ruby():
+    tag('ruby', $undeclared): $
+
+def rt():
+    tag('rt', $undeclared): $
+
+def rp():
+    tag('rp', $undeclared): $
+
+################################################################################
+# 4.7 Edits
+################################################################################
+
+def ins():
+    tag('ins', $undeclared): $
+
+def del():
+    tag('del', $undeclared): $
+
+################################################################################
+# 4.8 Embedded Content
+################################################################################
+
+def figure():
+    tag('figure', $undeclared): $
+
+def img():
+    tag('img', $undeclared): $
+
+def iframe():
+    tag('iframe', $undeclared): $
+
+def embed():
+    tag('embed', $undeclared): $
+
+def object():
+    tag('object', $undeclared): $
+
+def param():
+    tag('param', $undeclared): $
+
+def video():
+    tag('video', $undeclared): $
+
+def audio():
+    tag('audio', $undeclared): $
+
+def source():
+    tag('source', $undeclared): $
+
+def canvas():
+    tag('canvas', $undeclared): $
+
+def map():
+    tag('map', $undeclared): $
+
+def area():
+    tag('area', $undeclared): $
+
+################################################################################
+# 4.9 Tabular data
+################################################################################
+
+def table():
+    tag('table', $undeclared): $
+
+def caption():
+    tag('caption', $undeclared): $
+
+def colgroup():
+    tag('colgroup', $undeclared): $
+
+def col():
+    tag('col', $undeclared): $
+
+def tbody():
+    tag('tbody', $undeclared): $
+
+def thead():
+    tag('thead', $undeclared): $
+
+def tfoot():
+    tag('tfoot', $undeclared): $
+
+def tr():
+    tag('tr', $undeclared): $
+
+def td():
+    tag('td', $undeclared): $
+
+def th():
+    tag('th', $undeclared): $
+
+################################################################################
+# 4.10 Forms
+################################################################################
+
+def form():
+    tag('form', $undeclared): $
+
+def fieldset():
+    tag('fieldset', $undeclared): $
+
+def label():
+    tag('label', $undeclared): $
+
+def input():
+    tag('input', $undeclared): $
+
+def button():
+    tag('button', $undeclared): $
+
+def select():
+    tag('select', $undeclared): $
+
+def datalist():
+    tag('datalist', $undeclared): $
+
+def optgroup():
+    tag('optgroup', $undeclared): $
+
+def option():
+    tag('option', $undeclared): $
+
+def textarea():
+    tag('textarea', $undeclared): $
+
+def output():
+    tag('output', $undeclared): $
+
+################################################################################
+# 4.11 Interactive elements
+################################################################################
+
+def details():
+    tag('details', $undeclared): $
+
+def datagrid():
+    tag('datagrid', $undeclared): $
+
+def command():
+    tag('command', $undeclared): $
+
+def bb():
+    tag('bb', $undeclared): $
+
+def menu():
+    tag('menu', $undeclared): $
+
+################################################################################
+# 4.12 Miscellaneous elements
+################################################################################
+
+def legend():
+    tag('legend', $undeclared): $
+
+def div():
+    tag('div', $undeclared): $
+
+################################################################################
+# Internal functions
+################################################################################
+
+def tag(name):
+    '<'name
+    [ ' ' $key '="' $value '"' ]($undeclared)
+    [ '>' $ '<']($)
+    '/' [name]($) '>'

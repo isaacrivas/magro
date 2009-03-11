@@ -1,0 +1,61 @@
+import html
+import UseAnotherFileDefs
+
+html:
+ style:
+    'div{
+    '    float: left;
+    '    text-align: left;
+    '}
+
+html:
+ style:
+    `
+div{
+    float: left;
+    text-align: left;
+}
+`
+    
+#This are some comments
+
+ body:
+  div:
+   SomeForm('name', 1, 2, "return foo('bar')" )
+  div:
+   SomeCustomTag:
+    a( href="/" ): "The text of this link"
+    AnotherCustomTag:
+       "Some text"
+
+ script( type='text/javascript ):
+  ' function onload(){
+  '      //do some stuff.
+  ' }
+ 
+
+def SomeForm( name, arg1, arg2, onclick ):
+    div( onclick=onclick ):
+      form( id=name action='/name/' method='POST' ):
+        input( type='text' value=arg1 )
+        input( type='button' value=arg2 )
+
+
+def SomeCustomTag:
+    span( class="someclass"):
+	$
+
+def AnotherCustomTag:
+    "<b>" $ "</b>"
+
+def tag(name):
+    '<' name [' ' $key '="' $value '"']($unknown) '>' $ '</' name '>'
+
+	
+SYMBOL: #name name without parameters
+    contents #contents is an implicit parameter for atom.
+    
+SYMBOL( p1, p2, p3 ): #call name with parameters.
+    contents
+    
+#Every name is a call, the :  just tells what is going to be the content parameter.

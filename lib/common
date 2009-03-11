@@ -1,0 +1,18 @@
+import 'html5'
+
+
+def css( href ):
+    link( rel='stylesheet', type='text/css', href=href )
+
+def js(src):
+    javascript(src=src)
+    
+def javascript():
+    script( type='text/javascript', $undeclared ):
+        $ ' ' #force it to have a body.
+
+def ifIE( version='' ):
+    '<!--[if IE ' version ']>'
+    $
+    '<![endif]-->'
+
