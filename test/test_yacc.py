@@ -1,5 +1,5 @@
 from StringIO import StringIO
-from parser import *
+from magro.parser import *
 import os
 import unittest
 

@@ -1,4 +1,4 @@
-from ast import *
+from magro.ast import *
 import unittest
 
 class TestAst( unittest.TestCase ):

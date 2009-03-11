@@ -1,11 +1,11 @@
 import unittest
 
 from StringIO import StringIO
-from parser import parse
+from magro.parser import parse
 import os
 import sys
 
-import env
+import magro.env as env
 
 
 class TestHtmlTags( unittest.TestCase ):

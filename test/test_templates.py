@@ -1,7 +1,7 @@
 from StringIO import StringIO
-from parser import *
-from ast import DefNode
-from context import Context
+from magro.parser import *
+from magro.ast import DefNode
+from magro.context import Context
 import os
 import unittest
 

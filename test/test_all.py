@@ -1,5 +1,5 @@
 import unittest
-import test
+import magro.test as test
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromNames([

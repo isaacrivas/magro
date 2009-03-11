@@ -1,4 +1,4 @@
-from context import Context
+from magro.context import Context
 import unittest
 
 class TestContext( unittest.TestCase ):

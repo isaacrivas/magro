@@ -1,5 +1,5 @@
 import unittest
-import env
+import magro.env as env
 import os
 import sys
 

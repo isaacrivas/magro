@@ -1,5 +1,5 @@
 from StringIO import StringIO
-from lexer import *
+from magro.lexer import *
 import unittest
 
 class TestLex( unittest.TestCase ):

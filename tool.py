@@ -1,4 +1,4 @@
-import parser
+import magro.parser as parser
 import sys
 import os.path
 from optparse import OptionParser

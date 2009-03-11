@@ -1,56 +1,54 @@
-
-
-Unused terminals:
-
+Created by PLY version 3.0 (http://www.dabeaz.com/ply)
 
 Grammar
 
-Rule 1     program -> statements
-Rule 2     statements -> statements statement
-Rule 3     statements -> empty
-Rule 4     statement -> call
-Rule 5     statement -> definition
-Rule 6     statement -> typerenderer
-Rule 7     statement -> import
-Rule 8     import -> IMPORT STRING EOL
-Rule 9     definition -> DEF SYMBOL paramdefs : callsorblock
-Rule 10    typerenderer -> @ SYMBOL paramdefs : callsorblock
-Rule 11    block -> INDENT calls DEDENT
-Rule 12    calls -> calls call
-Rule 13    calls -> empty
-Rule 14    call -> fullcall
-Rule 15    call -> exprs EOL
-Rule 16    exprs -> exprs expr
-Rule 17    exprs -> expr
-Rule 18    expr -> string
-Rule 19    expr -> implicit
-Rule 20    expr -> cycle
-Rule 21    expr -> simplecall
-Rule 22    expr -> pycode
-Rule 23    string -> STRING
-Rule 24    implicit -> IMPLICIT
-Rule 25    cycle -> [ exprs ] callparams
-Rule 26    simplecall -> SYMBOL callparams
-Rule 27    pycode -> PYCODE
-Rule 28    fullcall -> SYMBOL callparams : callsorblock
-Rule 29    callsorblock -> EOL block
-Rule 30    callsorblock -> exprs EOL
-Rule 31    paramdefs -> ( paramnames )
-Rule 32    paramdefs -> ( )
-Rule 33    paramnames -> paramnames , paramname
-Rule 34    paramnames -> paramname
-Rule 35    paramname -> SYMBOL = STRING
-Rule 36    paramname -> SYMBOL
-Rule 37    callparams -> ( paramvalues )
-Rule 38    callparams -> empty
-Rule 39    paramvalues -> paramvalues , paramvalue
-Rule 40    paramvalues -> paramvalue
-Rule 41    paramvalue -> SYMBOL = paramexpr
-Rule 42    paramvalue -> paramexpr
-Rule 43    paramexpr -> exprs
-Rule 44    paramexpr -> group
-Rule 45    group -> ( paramvalues )
-Rule 46    empty -> <empty>
+Rule 1     S' -> program
+Rule 2     program -> statements
+Rule 3     statements -> statements statement
+Rule 4     statements -> empty
+Rule 5     statement -> call
+Rule 6     statement -> definition
+Rule 7     statement -> typerenderer
+Rule 8     statement -> import
+Rule 9     import -> IMPORT STRING EOL
+Rule 10    definition -> DEF SYMBOL paramdefs : callsorblock
+Rule 11    typerenderer -> @ SYMBOL paramdefs : callsorblock
+Rule 12    block -> INDENT calls DEDENT
+Rule 13    calls -> calls call
+Rule 14    calls -> empty
+Rule 15    call -> fullcall
+Rule 16    call -> exprs EOL
+Rule 17    exprs -> exprs expr
+Rule 18    exprs -> expr
+Rule 19    expr -> string
+Rule 20    expr -> implicit
+Rule 21    expr -> cycle
+Rule 22    expr -> simplecall
+Rule 23    expr -> pycode
+Rule 24    string -> STRING
+Rule 25    implicit -> IMPLICIT
+Rule 26    cycle -> [ exprs ] callparams
+Rule 27    simplecall -> SYMBOL callparams
+Rule 28    pycode -> PYCODE
+Rule 29    fullcall -> SYMBOL callparams : callsorblock
+Rule 30    callsorblock -> EOL block
+Rule 31    callsorblock -> exprs EOL
+Rule 32    paramdefs -> ( paramnames )
+Rule 33    paramdefs -> ( )
+Rule 34    paramnames -> paramnames , paramname
+Rule 35    paramnames -> paramname
+Rule 36    paramname -> SYMBOL = STRING
+Rule 37    paramname -> SYMBOL
+Rule 38    callparams -> ( paramvalues )
+Rule 39    callparams -> empty
+Rule 40    paramvalues -> paramvalues , paramvalue
+Rule 41    paramvalues -> paramvalue
+Rule 42    paramvalue -> SYMBOL = paramexpr
+Rule 43    paramvalue -> paramexpr
+Rule 44    paramexpr -> exprs
+Rule 45    paramexpr -> group
+Rule 46    group -> ( paramvalues )
+Rule 47    empty -> <empty>
 
 Terminals, with rules where they appear
 
@@ -103,9 +101,7 @@ statements           : 1 2
 string               : 18
 typerenderer         : 6
 
-
 Parsing method: LALR
-
 
 state 0
 
@@ -125,7 +121,6 @@ state 0
     PYCODE          reduce using rule 46 (empty -> .)
     $end            reduce using rule 46 (empty -> .)
 
-
     program                        shift and go to state 1
     statements                     shift and go to state 2
     empty                          shift and go to state 3
@@ -133,7 +128,6 @@ state 0
 state 1
 
     (0) S' -> program .
-
 
 
 
@@ -174,7 +168,6 @@ state 2
     [               shift and go to state 17
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     definition                     shift and go to state 21
     string                         shift and go to state 8
@@ -204,7 +197,6 @@ state 3
     $end            reduce using rule 3 (statements -> empty .)
 
 
-
 state 4
 
     (28) fullcall -> SYMBOL . callparams : callsorblock
@@ -221,7 +213,6 @@ state 4
     [               reduce using rule 46 (empty -> .)
     SYMBOL          reduce using rule 46 (empty -> .)
     PYCODE          reduce using rule 46 (empty -> .)
-
 
     callparams                     shift and go to state 25
     empty                          shift and go to state 27
@@ -241,7 +232,6 @@ state 5
     ,               reduce using rule 22 (expr -> pycode .)
 
 
-
 state 6
 
     (7) statement -> import .
@@ -257,13 +247,11 @@ state 6
     $end            reduce using rule 7 (statement -> import .)
 
 
-
 state 7
 
     (9) definition -> DEF . SYMBOL paramdefs : callsorblock
 
     SYMBOL          shift and go to state 28
-
 
 
 state 8
@@ -281,7 +269,6 @@ state 8
     ,               reduce using rule 18 (expr -> string .)
 
 
-
 state 9
 
     (24) implicit -> IMPLICIT .
@@ -295,7 +282,6 @@ state 9
     )               reduce using rule 24 (implicit -> IMPLICIT .)
     ,               reduce using rule 24 (implicit -> IMPLICIT .)
     ]               reduce using rule 24 (implicit -> IMPLICIT .)
-
 
 
 state 10
@@ -313,7 +299,6 @@ state 10
     $end            reduce using rule 4 (statement -> call .)
 
 
-
 state 11
 
     (2) statements -> statements statement .
@@ -329,7 +314,6 @@ state 11
     $end            reduce using rule 2 (statements -> statements statement .)
 
 
-
 state 12
 
     (8) import -> IMPORT . STRING EOL
@@ -337,13 +321,11 @@ state 12
     STRING          shift and go to state 29
 
 
-
 state 13
 
     (10) typerenderer -> @ . SYMBOL paramdefs : callsorblock
 
     SYMBOL          shift and go to state 30
-
 
 
 state 14
@@ -359,7 +341,6 @@ state 14
     ]               reduce using rule 23 (string -> STRING .)
     )               reduce using rule 23 (string -> STRING .)
     ,               reduce using rule 23 (string -> STRING .)
-
 
 
 state 15
@@ -378,7 +359,6 @@ state 15
     DEDENT          reduce using rule 14 (call -> fullcall .)
 
 
-
 state 16
 
     (27) pycode -> PYCODE .
@@ -392,7 +372,6 @@ state 16
     ,               reduce using rule 27 (pycode -> PYCODE .)
     ]               reduce using rule 27 (pycode -> PYCODE .)
     EOL             reduce using rule 27 (pycode -> PYCODE .)
-
 
 
 state 17
@@ -417,7 +396,6 @@ state 17
     SYMBOL          shift and go to state 31
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     string                         shift and go to state 8
     expr                           shift and go to state 22
@@ -441,7 +419,6 @@ state 18
     ,               reduce using rule 19 (expr -> implicit .)
 
 
-
 state 19
 
     (20) expr -> cycle .
@@ -455,7 +432,6 @@ state 19
     EOL             reduce using rule 20 (expr -> cycle .)
     )               reduce using rule 20 (expr -> cycle .)
     ,               reduce using rule 20 (expr -> cycle .)
-
 
 
 state 20
@@ -473,7 +449,6 @@ state 20
     ,               reduce using rule 21 (expr -> simplecall .)
 
 
-
 state 21
 
     (5) statement -> definition .
@@ -489,7 +464,6 @@ state 21
     $end            reduce using rule 5 (statement -> definition .)
 
 
-
 state 22
 
     (17) exprs -> expr .
@@ -503,7 +477,6 @@ state 22
     )               reduce using rule 17 (exprs -> expr .)
     ,               reduce using rule 17 (exprs -> expr .)
     ]               reduce using rule 17 (exprs -> expr .)
-
 
 
 state 23
@@ -528,7 +501,6 @@ state 23
     SYMBOL          shift and go to state 31
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     string                         shift and go to state 8
     expr                           shift and go to state 33
@@ -551,7 +523,6 @@ state 24
     $end            reduce using rule 6 (statement -> typerenderer .)
 
 
-
 state 25
 
     (28) fullcall -> SYMBOL callparams . : callsorblock
@@ -564,7 +535,6 @@ state 25
     [               reduce using rule 26 (simplecall -> SYMBOL callparams .)
     SYMBOL          reduce using rule 26 (simplecall -> SYMBOL callparams .)
     PYCODE          reduce using rule 26 (simplecall -> SYMBOL callparams .)
-
 
 
 state 26
@@ -597,7 +567,6 @@ state 26
     [               shift and go to state 17
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     pycode                         shift and go to state 5
     group                          shift and go to state 37
@@ -626,7 +595,6 @@ state 27
     ,               reduce using rule 38 (callparams -> empty .)
 
 
-
 state 28
 
     (9) definition -> DEF SYMBOL . paramdefs : callsorblock
@@ -634,7 +602,6 @@ state 28
     (32) paramdefs -> . ( )
 
     (               shift and go to state 43
-
 
     paramdefs                      shift and go to state 44
 
@@ -645,7 +612,6 @@ state 29
     EOL             shift and go to state 45
 
 
-
 state 30
 
     (10) typerenderer -> @ SYMBOL . paramdefs : callsorblock
@@ -653,7 +619,6 @@ state 30
     (32) paramdefs -> . ( )
 
     (               shift and go to state 43
-
 
     paramdefs                      shift and go to state 46
 
@@ -674,7 +639,6 @@ state 31
     EOL             reduce using rule 46 (empty -> .)
     )               reduce using rule 46 (empty -> .)
     ,               reduce using rule 46 (empty -> .)
-
 
     callparams                     shift and go to state 47
     empty                          shift and go to state 27
@@ -701,7 +665,6 @@ state 32
     SYMBOL          shift and go to state 31
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     string                         shift and go to state 8
     expr                           shift and go to state 33
@@ -724,7 +687,6 @@ state 33
     ]               reduce using rule 16 (exprs -> exprs expr .)
 
 
-
 state 34
 
     (15) call -> exprs EOL .
@@ -739,7 +701,6 @@ state 34
     PYCODE          reduce using rule 15 (call -> exprs EOL .)
     $end            reduce using rule 15 (call -> exprs EOL .)
     DEDENT          reduce using rule 15 (call -> exprs EOL .)
-
 
 
 state 35
@@ -766,7 +727,6 @@ state 35
     [               shift and go to state 17
     SYMBOL          shift and go to state 31
     PYCODE          shift and go to state 16
-
 
     simplecall                     shift and go to state 20
     string                         shift and go to state 8
@@ -795,7 +755,6 @@ state 36
     )               reduce using rule 46 (empty -> .)
     ,               reduce using rule 46 (empty -> .)
 
-
     callparams                     shift and go to state 47
     empty                          shift and go to state 27
 
@@ -805,7 +764,6 @@ state 37
 
     )               reduce using rule 44 (paramexpr -> group .)
     ,               reduce using rule 44 (paramexpr -> group .)
-
 
 
 state 38
@@ -838,7 +796,6 @@ state 38
     [               shift and go to state 17
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     pycode                         shift and go to state 5
     group                          shift and go to state 37
@@ -859,14 +816,12 @@ state 39
     ,               reduce using rule 42 (paramvalue -> paramexpr .)
 
 
-
 state 40
 
     (40) paramvalues -> paramvalue .
 
     )               reduce using rule 40 (paramvalues -> paramvalue .)
     ,               reduce using rule 40 (paramvalues -> paramvalue .)
-
 
 
 state 41
@@ -892,7 +847,6 @@ state 41
     SYMBOL          shift and go to state 31
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     string                         shift and go to state 8
     expr                           shift and go to state 33
@@ -909,7 +863,6 @@ state 42
     ,               shift and go to state 55
 
 
-
 state 43
 
     (31) paramdefs -> ( . paramnames )
@@ -922,7 +875,6 @@ state 43
     )               shift and go to state 57
     SYMBOL          shift and go to state 58
 
-
     paramnames                     shift and go to state 56
     paramname                      shift and go to state 59
 
@@ -931,7 +883,6 @@ state 44
     (9) definition -> DEF SYMBOL paramdefs . : callsorblock
 
     :               shift and go to state 60
-
 
 
 state 45
@@ -949,13 +900,11 @@ state 45
     $end            reduce using rule 8 (import -> IMPORT STRING EOL .)
 
 
-
 state 46
 
     (10) typerenderer -> @ SYMBOL paramdefs . : callsorblock
 
     :               shift and go to state 61
-
 
 
 state 47
@@ -971,7 +920,6 @@ state 47
     EOL             reduce using rule 26 (simplecall -> SYMBOL callparams .)
     )               reduce using rule 26 (simplecall -> SYMBOL callparams .)
     ,               reduce using rule 26 (simplecall -> SYMBOL callparams .)
-
 
 
 state 48
@@ -992,7 +940,6 @@ state 48
     )               reduce using rule 46 (empty -> .)
     ,               reduce using rule 46 (empty -> .)
 
-
     callparams                     shift and go to state 62
     empty                          shift and go to state 27
 
@@ -1002,7 +949,6 @@ state 49
     (11) block -> . INDENT calls DEDENT
 
     INDENT          shift and go to state 63
-
 
     block                          shift and go to state 64
 
@@ -1028,7 +974,6 @@ state 50
     SYMBOL          shift and go to state 31
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     string                         shift and go to state 8
     expr                           shift and go to state 33
@@ -1050,7 +995,6 @@ state 51
     @               reduce using rule 28 (fullcall -> SYMBOL callparams : callsorblock .)
     IMPORT          reduce using rule 28 (fullcall -> SYMBOL callparams : callsorblock .)
     $end            reduce using rule 28 (fullcall -> SYMBOL callparams : callsorblock .)
-
 
 
 state 52
@@ -1079,7 +1023,6 @@ state 52
     SYMBOL          shift and go to state 31
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     group                          shift and go to state 37
     string                         shift and go to state 8
@@ -1099,7 +1042,6 @@ state 53
     ,               shift and go to state 55
 
 
-
 state 54
 
     (37) callparams -> ( paramvalues ) .
@@ -1114,7 +1056,6 @@ state 54
     ]               reduce using rule 37 (callparams -> ( paramvalues ) .)
     )               reduce using rule 37 (callparams -> ( paramvalues ) .)
     ,               reduce using rule 37 (callparams -> ( paramvalues ) .)
-
 
 
 state 55
@@ -1145,7 +1086,6 @@ state 55
     [               shift and go to state 17
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     pycode                         shift and go to state 5
     group                          shift and go to state 37
@@ -1166,13 +1106,11 @@ state 56
     ,               shift and go to state 70
 
 
-
 state 57
 
     (32) paramdefs -> ( ) .
 
     :               reduce using rule 32 (paramdefs -> ( ) .)
-
 
 
 state 58
@@ -1185,14 +1123,12 @@ state 58
     ,               reduce using rule 36 (paramname -> SYMBOL .)
 
 
-
 state 59
 
     (34) paramnames -> paramname .
 
     )               reduce using rule 34 (paramnames -> paramname .)
     ,               reduce using rule 34 (paramnames -> paramname .)
-
 
 
 state 60
@@ -1219,7 +1155,6 @@ state 60
     [               shift and go to state 17
     SYMBOL          shift and go to state 31
     PYCODE          shift and go to state 16
-
 
     simplecall                     shift and go to state 20
     string                         shift and go to state 8
@@ -1255,7 +1190,6 @@ state 61
     SYMBOL          shift and go to state 31
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     string                         shift and go to state 8
     expr                           shift and go to state 22
@@ -1280,7 +1214,6 @@ state 62
     ]               reduce using rule 25 (cycle -> [ exprs ] callparams .)
 
 
-
 state 63
 
     (11) block -> INDENT . calls DEDENT
@@ -1294,7 +1227,6 @@ state 63
     IMPLICIT        reduce using rule 46 (empty -> .)
     [               reduce using rule 46 (empty -> .)
     PYCODE          reduce using rule 46 (empty -> .)
-
 
     empty                          shift and go to state 74
     calls                          shift and go to state 75
@@ -1315,7 +1247,6 @@ state 64
     DEDENT          reduce using rule 29 (callsorblock -> EOL block .)
 
 
-
 state 65
 
     (30) callsorblock -> exprs EOL .
@@ -1332,14 +1263,12 @@ state 65
     DEDENT          reduce using rule 30 (callsorblock -> exprs EOL .)
 
 
-
 state 66
 
     (41) paramvalue -> SYMBOL = paramexpr .
 
     )               reduce using rule 41 (paramvalue -> SYMBOL = paramexpr .)
     ,               reduce using rule 41 (paramvalue -> SYMBOL = paramexpr .)
-
 
 
 state 67
@@ -1350,7 +1279,6 @@ state 67
     ,               reduce using rule 45 (group -> ( paramvalues ) .)
 
 
-
 state 68
 
     (39) paramvalues -> paramvalues , paramvalue .
@@ -1359,13 +1287,11 @@ state 68
     ,               reduce using rule 39 (paramvalues -> paramvalues , paramvalue .)
 
 
-
 state 69
 
     (31) paramdefs -> ( paramnames ) .
 
     :               reduce using rule 31 (paramdefs -> ( paramnames ) .)
-
 
 
 state 70
@@ -1376,7 +1302,6 @@ state 70
 
     SYMBOL          shift and go to state 58
 
-
     paramname                      shift and go to state 76
 
 state 71
@@ -1384,7 +1309,6 @@ state 71
     (35) paramname -> SYMBOL = . STRING
 
     STRING          shift and go to state 77
-
 
 
 state 72
@@ -1402,7 +1326,6 @@ state 72
     $end            reduce using rule 9 (definition -> DEF SYMBOL paramdefs : callsorblock .)
 
 
-
 state 73
 
     (10) typerenderer -> @ SYMBOL paramdefs : callsorblock .
@@ -1418,7 +1341,6 @@ state 73
     $end            reduce using rule 10 (typerenderer -> @ SYMBOL paramdefs : callsorblock .)
 
 
-
 state 74
 
     (13) calls -> empty .
@@ -1429,7 +1351,6 @@ state 74
     IMPLICIT        reduce using rule 13 (calls -> empty .)
     [               reduce using rule 13 (calls -> empty .)
     PYCODE          reduce using rule 13 (calls -> empty .)
-
 
 
 state 75
@@ -1459,7 +1380,6 @@ state 75
     [               shift and go to state 17
     PYCODE          shift and go to state 16
 
-
     simplecall                     shift and go to state 20
     string                         shift and go to state 8
     expr                           shift and go to state 22
@@ -1478,14 +1398,12 @@ state 76
     ,               reduce using rule 33 (paramnames -> paramnames , paramname .)
 
 
-
 state 77
 
     (35) paramname -> SYMBOL = STRING .
 
     )               reduce using rule 35 (paramname -> SYMBOL = STRING .)
     ,               reduce using rule 35 (paramname -> SYMBOL = STRING .)
-
 
 
 state 78
@@ -1504,7 +1422,6 @@ state 78
     DEDENT          reduce using rule 11 (block -> INDENT calls DEDENT .)
 
 
-
 state 79
 
     (12) calls -> calls call .
@@ -1515,5 +1432,4 @@ state 79
     IMPLICIT        reduce using rule 12 (calls -> calls call .)
     [               reduce using rule 12 (calls -> calls call .)
     PYCODE          reduce using rule 12 (calls -> calls call .)
-
 
