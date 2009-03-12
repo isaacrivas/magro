@@ -11,7 +11,7 @@ class TestResults( unittest.TestCase ):
         pass
         
     def compare(self, text, result ):
-        self.assertEqual( parse( StringIO(text) ), result )
+        self.assertEqual( parse( text ), result )
         
     def testempty(self):
         source = ""

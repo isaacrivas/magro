@@ -13,7 +13,7 @@ class TestHtmlTags( unittest.TestCase ):
         env.path.append("./lib")
 
     def compare(self, text, result ):
-        self.assertEqual( parse( StringIO(text) ), result )
+        self.assertEqual( parse( text ), result )
 
     def test_path(self):
         print env.path,

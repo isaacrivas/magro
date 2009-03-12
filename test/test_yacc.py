@@ -1,4 +1,3 @@
-from StringIO import StringIO
 from magro.parser import *
 import os
 import unittest
@@ -8,11 +7,11 @@ class TestYacc( unittest.TestCase ):
         pass
         
     def accept(self, text):
-        parse( StringIO(text) )
+        parse( text )
 
     def reject(self, text):
         try:
-            parse( StringIO(text) )
+            parse( text )
             self.fail('The text should have been rejected.')
         except Exception:
             pass
@@ -47,7 +46,7 @@ import 'module'
 html:
     body:
         div
-        
+
 def html():
     '<html>' $ '</html>'
 

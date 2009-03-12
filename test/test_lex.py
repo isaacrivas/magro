@@ -7,10 +7,11 @@ class TestLex( unittest.TestCase ):
         pass
         
     def dotest(self, text, tokens):
-        tokfun = tokenizer( StringIO(text) )
+        tokfun = tokenizer( text )
         i=1
         for t in tokens:
             tok = tokfun()
+            print tok
             if not tok: self.fail( 'Expected %d tokens, %d  found'%(len(tokens),i) )
             self.assertEqual( t, tok.type )
             i+=1
@@ -18,7 +19,7 @@ class TestLex( unittest.TestCase ):
     def testcomments(self):
         self.dotest(
             "#comment\ndef something: #this is a comment\n    asymbol\n",
-            ['DEF', 'SYMBOL', ':', 'EOL', 'INDENT', 'SYMBOL', 'EOL', 'DEDENT' ] )
+            ['DEF', 'SYMBOL', ':', 'EOL', 'INDENT', 'SYMBOL', 'EOL', 'DEDENT', ] )
 
             
     def testwords(self):
@@ -36,12 +37,12 @@ class TestLex( unittest.TestCase ):
         strings = """'primera\n'"segunda"\n"tercera\n"'cuarta'\n'\n"\n"""
         self.dotest(
             strings,
-            ['STRING', 'EOL']*6 )
+            ['STRING', 'EOL', ]*6 )
 
     def testescape(self):
         text = r"'1\n2\t3'"
         expected = "1\n2\t3"
-        tokfun = tokenizer( StringIO(text) )
+        tokfun = tokenizer( text )
         tok = tokfun()
         self.assertEqual( tok.value, expected )
 
@@ -60,14 +61,22 @@ class TestLex( unittest.TestCase ):
         
     def testindentation(self):
         self.dotest(
-            "abc\n  fed\n  efg\n   ghi\njkl\n",
-            ['SYMBOL', 'EOL', 
-             'INDENT', 'SYMBOL', 'EOL', 'SYMBOL', 'EOL',
-             'INDENT', 'SYMBOL', 'EOL',
-             'DEDENT', 'DEDENT', 'SYMBOL', 'EOL' ] )
+            """
+abc
+  fed
+  efg
+    ghi
+jkl
+""",
+            ['SYMBOL','EOL',
+             'INDENT', 'SYMBOL', 'EOL', 
+                       'SYMBOL', 'EOL',
+                       'INDENT', 'SYMBOL', 'EOL',
+                       'DEDENT',
+             'DEDENT', 'SYMBOL', 'EOL', ] )
                 
     def testignoreeols(self):
-        self.dotest('\n\n\nA\n\n\n\nB',('SYMBOL','EOL','SYMBOL') )
+        self.dotest('\n\n\nA\n\n\n   \n\n\n\nB',('SYMBOL',  'EOL', 'SYMBOL') )
 
     def testpycode(self):
         self.dotest('`print x`',('PYCODE',) )

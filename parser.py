@@ -25,7 +25,8 @@ def p_statement(p):
     """statement : call
                  | definition
                  | typerenderer
-                 | import"""
+                 | import
+                 | nop"""
     p[0] = p[1]
 
 def p_import(p):
@@ -180,8 +181,15 @@ def p_empty(p):
     'empty :'
     pass
 
+def p_nop(p):
+    'nop : EOL'
+    pass
+
 def p_error(p):
-    raise SyntaxError( "%s"%(p) )
+    if p:
+        raise SyntaxError( "Error at token %s"%(p, ) )
+    else:
+        raise SyntaxError( "EOF reached prematurely" )
 
 #Public interface
 
@@ -199,12 +207,14 @@ def importfile( filename, context ):
     fullpath = env.searchfile( filename )
     if fullpath:
         f = open( fullpath )
+        text = f.read()
+        f.close()
+
         pr = yacc.yacc()
         pr.context = context
         pr.globals = {}
         pr.currentmodule = filename
-        pr.parse( tokenfunc=tokenizer(f) )
-        f.close()
+        pr.parse( tokenfunc=tokenizer(text) )
     else:
         print "WARNING: %s file not found"%(filename,)
         

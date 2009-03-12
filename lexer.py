@@ -12,17 +12,33 @@ tokens = [
    'IMPLICIT',
    'STRING',
    'PYCODE',
-   'EOL',
    'INDENT',
    'DEDENT',
+   'EOL',
 ] + reserved.values()
 
 literals = ":()[]=,@"
 
+t_ignore = ' \t'
+
 def t_comment(t):
-    r'\#.*'
+    r'^(\#.*\n)+' \
+    r'|(?=\n)\#.*\n' \
+    r'|\#.*'
     pass
 
+def t_emptylines(t):
+    r'^\n+' \
+    r'|(?=\n)\s+?(?=\n)'
+    pass
+
+def t_EOL(t):
+    r"\n+(?P<indent>[ \t]*)"
+    t.lexer.lineno += len(t.value)
+    blanks = t.lexer.lexmatch.group("indent")
+    processindentation( t.lexer, blanks[:-1] )
+    return t
+    
 def t_SYMBOL(t):
     r'[a-zA-Z0-9._-]+'
     t.type = reserved.get( t.value , 'SYMBOL' )
@@ -33,11 +49,12 @@ def t_IMPLICIT(t):
     return t
     
 def t_STRING(t):
-    r'\'.*?\'|\".*?\"|\'[^\']*\n|\"[^\"]*\n'
-    if t.value[-1] == "\n":
-        t.value = eval( t.value[:-1]+t.value[0])+'\n'
-        #rescan the \n
-        t.lexer.lexpos -= 1
+    r"\'.*?\'" \
+    r'|\".*?\"' \
+    r"|\'[^\']*?(?=\n)" \
+    r'|\"[^\"]*?(?=\n)'
+    if t.value[0] != t.value[-1] or len(t.value)==1:
+        t.value = eval( t.value+t.value[0] )+'\n'
     else:
         t.value = eval(t.value)
     return t
@@ -46,17 +63,20 @@ def t_PYCODE(t):
     r'`[^`]*`'
     t.value = t.value[1:-1]
     return t
-    
-def t_EOL(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
-    return t
-    
-t_ignore = ' \t'
 
 def t_error(t):
     raise SyntaxError("syntax error on line %d near '%s'" % (t.lineno, t.value))
 
+def processindentation( lexer, blanks ):
+    indentsize =  blanks and len( blanks ) or 0
+        
+    if ( indentsize > lexer.levels[-1] ):
+        lexer.levels.append( indentsize )
+        lexer.pendingtokens.append( createIndent( indentsize ) )
+    else:
+        while ( indentsize < lexer.levels[-1] ):
+            dedentsize = lexer.levels.pop()
+            lexer.pendingtokens.append( createDedent( dedentsize ) )
 
 def createToken( type, value ):
     indent_token = lex.LexToken()
@@ -71,43 +91,24 @@ def createIndent( value ):
 
 def createDedent( value ):
     return createToken( 'DEDENT', value )
-    
-indent_expr = re.compile('^([ \t]+)')
-emptyline = re.compile('^\s*(\#.*)?\n')
-    
+
+#Public interface    
+   
 def tokenizer( input ):
     lexer = lex.lex()
     lexer.levels = [ 0 ]
     lexer.pendingtokens = []
-    lexer.parsing = False
+    lexer.input( input )
     def tokenfunc_():
-        if not lexer.parsing:
-            currline = input.readline()
-            while emptyline.match( currline ):
-                currline = input.readline()
-            
-            lineindent = indent_expr.match( currline )
-            indentsize = 0
-            if ( lineindent ):
-                indentsize =  len( lineindent.group(1) )
-                
-            if ( indentsize > lexer.levels[-1] ):
-                lexer.levels.append( indentsize )
-                lexer.pendingtokens.append( createIndent( indentsize ) )
-            else:
-                while ( indentsize < lexer.levels[-1] ):
-                    dedentsize = lexer.levels.pop()
-                    lexer.pendingtokens.append( createDedent( dedentsize ) )
-
-            lexer.input( currline )
-            lexer.parsing = True
-        
         if len( lexer.pendingtokens ):
-            return lexer.pendingtokens.pop()
-            
+            return lexer.pendingtokens.pop(0)
+
         tok = lexer.token()
-        if not tok or tok.type == 'EOL' :
-            lexer.parsing = False
+
+        if len( lexer.pendingtokens ) and ( tok and tok.type != 'EOL'):
+            pending = lexer.pendingtokens.pop(0)
+            lexer.pendingtokens.append(tok)
+            return pending
 
         return tok
     return tokenfunc_

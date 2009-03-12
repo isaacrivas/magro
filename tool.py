@@ -4,7 +4,8 @@ import os.path
 from optparse import OptionParser
 
 def tool( thefile ):
-    return parser.parse( thefile )
+    text = thefile.read()
+    return parser.parse( text )
 
 if __name__ == '__main__':
     usage = 'usage: %prog [options] [filename]'

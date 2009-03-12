@@ -12,7 +12,7 @@ class TestTemplates( unittest.TestCase ):
     def testcompile(self):
         source = 'variable\n'
 
-        ast = compile( StringIO(source) )
+        ast = compile( source )
         res = ast.eval( { 'variable':123 } )
         self.assertEqual( res, '123' )
 
@@ -31,35 +31,35 @@ class TestTemplates( unittest.TestCase ):
                 yield i+1
                 i+=1
 
-        ast = compile( StringIO(source) )
+        ast = compile( source )
         res = ast.eval( { 'iter':gen(3) } )
         self.assertEqual( res, '123' )
 
     def testarrayarg(self):
         source = '[$value](array)\n'
 
-        ast = compile( StringIO(source) )
+        ast = compile( source )
         res = ast.eval( { 'array':[1,2,3] } )
         self.assertEqual( res, '123' )
 
     def testarrayargs(self):
         source = '[ $value ]( a1, a2 )\n'
 
-        ast = compile( StringIO(source) )
+        ast = compile( source )
         res = ast.eval( { 'a1':[1,2,3],'a2':[4,5,6] } )
         self.assertEqual( res, '123456' )
 
     def testarraygroup(self):
         source = '[ [$value]($value) ]( (a1),(a2) )\n'
 
-        ast = compile( StringIO(source) )
+        ast = compile( source )
         res = ast.eval( { 'a1':[1,2,3],'a2':[4,5,6] } )
         self.assertEqual( res, '123456' )
 
     def testarraynestedgroup(self):
         source = '[ [ [$value]($value) ]($value) ]( (a1),(a2) )\n'
 
-        ast = compile( StringIO(source) )
+        ast = compile( source )
         res = ast.eval( { 'a1':[[1],[2,3]],'a2':[[4,5],6] } )
         self.assertEqual( res, '123456' )
 
@@ -74,7 +74,7 @@ someAobject
                 self.name = name
                 self.value = value
         
-        ast = compile( StringIO(source) )
+        ast = compile( source )
         context = Context({ 'someAobject': A('super','duper') })
 
         res = ast.eval( context )
@@ -90,7 +90,7 @@ someAobject
         class B(A): pass
         class C(B): pass
         
-        ast = compile( StringIO(source) )
+        ast = compile( source )
 
         context = Context({ 'someAobject': C() })
         res = ast.eval( context )
@@ -106,7 +106,7 @@ someAobject
         class B(A): pass
         class C(B): pass
         
-        ast = compile( StringIO(source) )
+        ast = compile( source )
 
         context = Context({ 'someAobject': C() })
         res = ast.eval( context )
@@ -125,7 +125,7 @@ someAobject
         class C(B1,B2): pass
         class D(C): pass
         
-        ast = compile( StringIO(source) )
+        ast = compile( source )
 
         context = Context({ 'someAobject': D() })
         res = ast.eval( context )
@@ -137,7 +137,7 @@ var
 def var():
     'abc'
 """
-        ast = compile( StringIO(source) )
+        ast = compile( source )
 
         res = ast.eval( {} )
         self.assertEqual( res, 'abc' )
