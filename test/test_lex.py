@@ -39,6 +39,15 @@ class TestLex( unittest.TestCase ):
             strings,
             ['STRING', 'EOL', ]*6 )
 
+    def testlongstrings(self):
+        strings = "'''\nesta es\nuna\prueba de una \n\n cadena larga''' ok '''a'b'c''' ok" \
+                  '"""\nesta es\nuna\prueba de una \n\n cadena larga""" ok """a"b"c""" ok'
+        
+        print strings
+        self.dotest(
+            strings,
+            ['STRING', 'SYMBOL']*4 )
+
     def testescape(self):
         text = r"'1\n2\t3'"
         expected = "1\n2\t3"

@@ -47,12 +47,19 @@ def t_SYMBOL(t):
 def t_IMPLICIT(t):
     r'\$[\$a-zA-Z0-9._-]*'
     return t
-    
+
+def t_longSTRING(t):    
+    r'"{3}(.|\n)*?"{3}' \
+    r"|'{3}(.|\n)*?'{3}"
+    t.type = 'STRING'
+    t.value = eval(t.value)
+    return t
+
 def t_STRING(t):
-    r"\'.*?\'" \
-    r'|\".*?\"' \
-    r"|\'[^\']*?(?=\n)" \
-    r'|\"[^\"]*?(?=\n)'
+    r"'.*?'" \
+    r'|".*?"' \
+    r"|'[^']*?(?=\n)" \
+    r'|"[^"]*?(?=\n)'
     if t.value[0] != t.value[-1] or len(t.value)==1:
         t.value = eval( t.value+t.value[0] )+'\n'
     else:
