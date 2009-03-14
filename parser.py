@@ -199,9 +199,9 @@ def compile(input):
     parser.globals = {}
     return parser.parse( tokenfunc=tokenizer(input) )
 
-def parse( input ):
+def parse( input, context={} ):
     root = compile(input)
-    return root.eval()
+    return root.eval( context )
 
 def importfile( filename, context ):
     fullpath = env.searchfile( filename )
