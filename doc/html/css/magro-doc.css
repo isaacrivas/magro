@@ -1,0 +1,29 @@
+/*
+:Author: Isaac Rivas
+:Contact: isaac@isaacrivas.com
+:Copyright: This stylesheet has been placed in the public domain.
+
+Stylesheet for use with Docutils.
+*/
+
+h1, h2, h3, h4, h5, h6, p.topic-title{
+  font-family: Trebuchet MS,sans-serif;
+}
+
+h1{ font-size: 1.8em; }
+h2{
+    font-size: 1.6em;
+    background-color: #F7F7F7;
+    border-bottom: thin solid #F0F0F0;
+    padding: 0.2em;
+}
+h3{ font-size: 1.4em; }
+h4{ font-size: 1.2em; }
+h5{ font-size: 1.0em; }
+h6{ font-size: 1.0em; }
+
+.literal-block, .doctest-block{
+    background-color: #EFEFEF;
+    border: thin solid #DDDDDD;
+    padding: 1.0em;
+}
