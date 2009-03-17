@@ -1,0 +1,36 @@
+Invocation
+==========
+
+The Magro Tool
+--------------
+
+You can use the ``magro\tool.py`` script to evaluate your magro template,
+this script receives input from ``stdin`` and outputs to ``stdout`` by
+default; but you can tell it to receive its input from a file and to write
+its output to another file.
+::
+
+    python magro/tool.py -o target.html source_template
+
+Python Library
+--------------
+
+To use Magro as a python library, import the ``magro.parser`` package:
+
+    >>> import magro.parser as parser
+
+Then call it's parse method to translate the template:
+
+    >>> import magro.parser as parser
+    >>> parser.parse("'hello ' target \n", { 'target':'world' })
+    hello world
+    
+Or you can compile it and reuse it multiple times:
+
+    >>> import magro.parser as parser
+    >>> template = parser.compile("'hello ' target \n")
+    >>> template.eval({ 'target':'world' })
+    hello world
+    >>> template.eval({ 'target':'again' })
+    hello again
+

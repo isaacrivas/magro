@@ -1,0 +1,10 @@
+What is magro?
+==============
+
+Magro is an open source template engine written in Python. It
+is designed for writting very lean templates code.
+
+It can be used for generating any kind of text output, but the
+hierarchical nature of its syntax makes it specially useful for
+creating html files.
+
