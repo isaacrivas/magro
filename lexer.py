@@ -29,7 +29,7 @@ def t_comment(t):
 
 def t_emptylines(t):
     r'^\n+' \
-    r'|(?=\n)\s+?(?=\n)'
+    r'|(?=\n)\s+?(\#.*)?(?=\n)'
     pass
 
 def t_EOL(t):
@@ -52,7 +52,7 @@ def t_longSTRING(t):
     r'"{3}(.|\n)*?"{3}' \
     r"|'{3}(.|\n)*?'{3}"
     t.type = 'STRING'
-    t.value = eval(t.value)
+    t.value = eval('u'+t.value)
     return t
 
 def t_STRING(t):
@@ -61,9 +61,9 @@ def t_STRING(t):
     r"|'[^']*?(?=\n)" \
     r'|"[^"]*?(?=\n)'
     if t.value[0] != t.value[-1] or len(t.value)==1:
-        t.value = eval( t.value+t.value[0] )+'\n'
+        t.value = eval( 'u'+t.value+t.value[0] )+'\n'
     else:
-        t.value = eval(t.value)
+        t.value = eval( 'u'+t.value)
     return t
 
 def t_PYCODE(t):
@@ -105,7 +105,7 @@ def tokenizer( input ):
     lexer = lex.lex()
     lexer.levels = [ 0 ]
     lexer.pendingtokens = []
-    lexer.input( input )
+    lexer.input( input.replace('\r','\n') )
     def tokenfunc_():
         if len( lexer.pendingtokens ):
             return lexer.pendingtokens.pop(0)

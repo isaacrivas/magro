@@ -239,8 +239,8 @@ def native( param ):
         self.compare( source, result )
 
     def testnonascii(self):
-        source = "'αινφω'\n"
-        result = "αινφω"
+        source = u"'Γ΅Γ©Γ―Γ³Γ™'\n"
+        result = u"Γ΅Γ©Γ―Γ³Γ™"
         self.compare( source, result )
 
     def testpycodeimport(self):

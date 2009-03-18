@@ -11,7 +11,6 @@ class TestLex( unittest.TestCase ):
         i=1
         for t in tokens:
             tok = tokfun()
-            print tok
             if not tok: self.fail( 'Expected %d tokens, %d  found'%(len(tokens),i) )
             self.assertEqual( t, tok.type )
             i+=1
@@ -43,7 +42,6 @@ class TestLex( unittest.TestCase ):
         strings = "'''\nesta es\nuna\prueba de una \n\n cadena larga''' ok '''a'b'c''' ok" \
                   '"""\nesta es\nuna\prueba de una \n\n cadena larga""" ok """a"b"c""" ok'
         
-        print strings
         self.dotest(
             strings,
             ['STRING', 'SYMBOL']*4 )
@@ -85,10 +83,28 @@ jkl
              'DEDENT', 'SYMBOL', 'EOL', ] )
                 
     def testignoreeols(self):
-        self.dotest('\n\n\nA\n\n\n   \n\n\n\nB',('SYMBOL',  'EOL', 'SYMBOL') )
+        self.dotest('\n\n\nA\n\n\n   \n\n\n\n"B"',('SYMBOL',  'EOL', 'STRING') )
+
+    def testignoreindentedcomment(self):
+        self.dotest('symbol\n      #comment\n  "string"',('SYMBOL', 'EOL', 'INDENT', 'STRING') )
+
+    def dotestoel(self, eol):
+        text = 'symbol'+eol+'"string"#comment'+eol+'$implicit   #comment'+eol+'def'
+        self.dotest( text ,('SYMBOL', 'EOL', 'STRING', 'EOL', 'IMPLICIT', 'EOL', 'DEF') )
+ 
+    def testunixeol(self):
+        self.dotestoel('\n')
+        
+    def testwindowseol(self):
+        self.dotestoel('\r\n')
+
+    def testmaceol(self):
+        self.dotestoel('\r')
+
 
     def testpycode(self):
         self.dotest('`print x`',('PYCODE',) )
+        
                 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestLex)

@@ -1,4 +1,4 @@
-from cStringIO import StringIO
+from StringIO import StringIO
 
 class Node:
     def __init__(self):
@@ -180,7 +180,7 @@ class CycleNode( Node ):
         if name: mycontext['$key'] = name
         if value: mycontext['$value'] = value
         for c in self.code:
-            result += str( c.eval(mycontext) )
+            result += unicode( c.eval(mycontext) )
         return result
 
 class GroupNode( Node ):
@@ -198,7 +198,7 @@ class BlockNode():
     def eval(self,context):
         buffer = StringIO()
         for s in self.code:
-            text = str(s.eval( context ))
+            text = unicode(s.eval( context ))
             if text: buffer.write(text)
 
         result = buffer.getvalue()
