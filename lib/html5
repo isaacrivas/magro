@@ -354,8 +354,8 @@ def div():
 # Internal functions
 ################################################################################
 
-def tag(name):
-    '<'name
+def tag(_tagname):
+    '<'_tagname
     [ ' ' $key '="' $value '"' ]($undeclared)
     [ '>' $ '<']($)
-    '/' [name]($) '>'
+    '/' [_tagname]($) '>'

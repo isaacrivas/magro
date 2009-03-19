@@ -1,5 +1,4 @@
-import 'html5'
-
+import 'doctypes'
 
 def css( href ):
     link( rel='stylesheet', type='text/css', href=href )
@@ -21,3 +20,13 @@ def jquery():
         "jQuery(document).ready(function() {
         $
         "});
+
+def textfield(name='', value=''):
+    input( type='text', name=name, value=value, $undeclared )
+
+def hidden(name='', value=''):
+    input( type='hidden', name=name, value=value, $undeclared )
+
+def submit( value='' ):
+    input( type='submit', value=value, $undeclared )
+   
