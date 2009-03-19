@@ -70,6 +70,7 @@ class DefNode( Node ):
         #evaluate params and see if they were declared.
         undeclared = []
         i = 1
+        iunnamed = 0
         for p in params:
             value = p.eval(context)
             context[ '$%d'%(i,) ] = value
@@ -78,7 +79,11 @@ class DefNode( Node ):
                 if p.name not in self.paramnames:
                     p = ParamNode( p.name, StringNode(value) )
                     undeclared.append(p)
-                
+            else:
+                iunnamed += 1
+                if iunnamed > len(self.params):
+                    p = ParamNode( None, StringNode(value) )
+                    undeclared.append(p)
             i+=1
         context['$undeclared'] = undeclared
 
@@ -87,7 +92,7 @@ class DefNode( Node ):
         for p in self.params:
             if not context.has_key(p.name):
                 ivar = '$%d'%(i,)
-                if context.has_key( ivar ):
+                if context.has_key( ivar ) and not params[i-1].name:
                     context[p.name] = context[ivar]
                 else:
                     context[p.name] = p.eval(context)
@@ -144,41 +149,62 @@ class CallNode( Node ):
                 return symbol.execute( self.params, mycontext )
         else:
             return symbol
-        
+
+class EvalParam():
+    def __init__( self, pos, name, value, islast ):
+        self.pos = pos
+        self.name = name
+        self.value = value
+        self.islast = islast
+            
 class CycleNode( Node ):
     def __init__(self, params=[], code=[]):
         self.params = params
         self.code = code
     
     def eval( self, context ):
-        return self.processparams( self.params, context )
-            
-    def processparams(self, params, context):
         result = ''
-        i=-1
-        for p in params:
-            i+=1
-            name = None
-            if isinstance(p,Node):
-                name = p.name
-                val = p.eval(context)
-            else:
-                val = p
-
-            if not name and not val: continue
-
-            if hasattr(val,'__iter__'):
-                result += self.processparams( val, context )
-            else:
-                result += self.execparam( i, name, val, context )
+        for p in self.paramsgenerator( context ):
+            if p.name or p.value:
+                result += self.execparam( p, context )
         return result
+        
+    def paramsgenerator( self, context ):
+        def namevalue(p):
+            if isinstance(p,Node):
+                return (p.name, p.eval(context))
+            else:
+                return (None, p)
 
-    def execparam(self, pos, name, value, context ):
+        i=0
+        ik = 0
+        nparams = len(self.params)
+        for p in self.params:
+            (name,val) = namevalue(p)
+            
+            if hasattr(val,'__iter__') and not name:
+                k=0
+                for p_ in val:
+                    (name_,val_) = namevalue(p_)
+                    islast = ( i == nparams-1 ) and hasattr(k,'__len__') and (k==len(val)-1)
+                    yield EvalParam( ik+k, name_, val_, islast )
+                    k+=1
+                ik+=k
+            else:
+                islast = i == nparams-1
+                yield EvalParam( ik, name, val, islast )
+                ik+=1
+            i+=1
+
+    def execparam(self, p, context ):
         result = ''
         mycontext = context.copy()
-        mycontext['$index'] = pos
-        if name: mycontext['$key'] = name
-        if value: mycontext['$value'] = value
+        mycontext['$index'] = p.pos
+        mycontext['$first'] = p.pos == 0 and 'True' or ''
+        mycontext['$last'] = p.islast and 'True' or ''
+        mycontext['$notlast'] = (not p.islast) and 'True' or ''
+        if p.name: mycontext['$key'] = p.name
+        if p.value: mycontext['$value'] = p.value
         for c in self.code:
             result += unicode( c.eval(mycontext) )
         return result
@@ -190,6 +216,7 @@ class GroupNode( Node ):
 
     def eval(self,context):
         return self.value
+
 class BlockNode():
     def __init__(self,code):
         self.code=[]

@@ -92,7 +92,7 @@ class TestAst( unittest.TestCase ):
             StringNode('a'),
             StringNode('l'),
         ])
-        paramnode = ParamNode( name, value )
+        paramnode = ParamNode( 'p1', value )
         text = '<val>'
         
         node = CallNode( name, [paramnode] )

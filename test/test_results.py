@@ -94,6 +94,17 @@ def tag( name ):
         result = "<div>123</div><vid>456</vid>"
         self.compare( source, result )
 
+    def testdefaultparams(self):
+        source = """
+macro( '1', p3='3')
+macro( '4', '5', '6', p7='7')
+        
+def macro( p1, p2='II' ):
+    '(' p1 ',' p2 [ ',' $value ]($undeclared) ')'
+"""
+        result = "(1,II,3)(4,5,6,7)"
+        self.compare( source, result )
+        
     def testcycle1(self):
         source = "[$value]('1','2','3')\n"
         result = "123"
@@ -134,6 +145,11 @@ def tag(name):
         result = '<div id="d1" class="c1">'
         self.compare( source, result )
 
+    def testcyclenamedgroup(self):
+        source = "[ $key '={' [ $value ' ' ]($value) '} ' ]( a=('1', '2', '3'), b=('A','B','C') )\n"
+        result = 'a={1 2 3 } b={A B C } '
+        self.compare( source, result )
+
         
     def testcyclecondition(self):
         source = """
@@ -162,6 +178,16 @@ def if( condition ):
         self.compare( "[$index]('a','b','c')\n",'012' )
         self.compare( "[$value]('a','b','c')\n",'abc' )
         self.compare( "[$key](A='a',B='b',C='c')\n",'ABC' )
+
+        source = u"""
+
+cycle('A','B','C')
+        
+def cycle():
+    [ ['{']($first) $value [', ']($notlast) ['}']($last) ](`range(1,4)`, $undeclared, '$' )\n
+"""
+        result = "{1, 2, 3, A, B, C, $}"
+        self.compare( source, result )
 
     def testundeclared(self):
         source = """
@@ -262,7 +288,7 @@ def m():
 """
         result = "ABC"
         self.compare( source, result )
-    
+
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestResults)
     unittest.TextTestRunner(verbosity=2).run(suite)
