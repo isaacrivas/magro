@@ -15,13 +15,13 @@ class TemplateBridge(object):
         
         buffer = ''
         if filename:
-            f = open(filename,'r')
+            f = open(filename)
             buffer = f.read()
             f.close()
         else:
             raise Exception( 'Template not found: %s'%( template, ) )
-        
-        return buffer
+
+        return parser.parse(buffer,Context(context))
 
     def render_string(self, template, context):
         try:
@@ -29,4 +29,4 @@ class TemplateBridge(object):
             return parser.parse(template,ctx)
         except:
             return template
-        
+
