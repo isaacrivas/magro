@@ -1,0 +1,47 @@
+import 'html5'
+
+def container12( class ):
+    containerN( '12', class, $undeclared ): $
+def container16( class ):
+    containerN( '16', class, $undeclared ): $
+        
+def containerN( ncolumns, class ):
+    div( class = 'container_' ncolumns ' ' class, $undeclared): $
+
+def grid1( class ):
+    gridN( '1', class, $undeclared ): $
+def grid2( class ):
+    gridN( '2', class, $undeclared ): $
+def grid3( class ):
+    gridN( '3', class, $undeclared ): $
+def grid4( class ):
+    gridN( '4', class, $undeclared ): $
+def grid5( class ):
+    gridN( '5', class, $undeclared ): $
+def grid6( class ):
+    gridN( '6', class, $undeclared ): $
+def grid7( class ):
+    gridN( '7', class, $undeclared ): $
+def grid8( class ):
+    gridN( '8', class, $undeclared ): $
+def grid9( class ):
+    gridN( '9', class, $undeclared ): $
+def grid10( class ):
+    gridN( '10', class, $undeclared ): $
+def grid11( class ):
+    gridN( '11', class, $undeclared ): $
+def grid12( class ):
+    gridN( '12', class, $undeclared ): $
+def grid13( class ):
+    gridN( '13', class, $undeclared ): $
+def grid14( class ):
+    gridN( '14', class, $undeclared ): $
+def grid15( class ):
+    gridN( '15', class, $undeclared ): $
+def grid16( class ):
+    gridN( '16', class, $undeclared ): $
+        
+def gridN( ncolumns, class ):
+    div( class = 'grid_' ncolumns ' ' class, $undeclared):
+        $
+

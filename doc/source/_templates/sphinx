@@ -1,0 +1,50 @@
+import 'web'
+import '960grid'
+
+def layout():
+    html4trans:
+        html5.head:
+            html5.meta( http-equiv="Content-Type", content="text/html; charset=utf-8" )
+            html5.title:
+                title titlesuffix
+            css( '_static/css/reset.css' )
+            css( '_static/css/text.css' )
+            css( '_static/css/grid.css' )
+            css( '_static/css/magro-doc.css' )
+            js_links
+        html5.body:
+            header
+            container12:
+                grid8:
+                    contents
+                grid4:
+                    sidebar
+            footer
+
+def header():
+    div(class='header'):
+        container12:
+            grid12:
+                a(href='index.html'):
+                    img(src='_static/img/magro256.png')
+
+def body():
+    ''
+
+def contents():
+    div(class='contents'):
+        body  #Sphinx is using body as a variable
+    
+def sidebar():
+    div(class='sidebar'):
+        toc
+        quicksearch
+        
+def quicksearch():
+    div(class='search'):
+        span: 'Quick Search:'
+        form(action=`pathto('search')`, method='get'):
+            textfield( 'q', size='18' )
+            submit('Search')
+            hidden('check_keywords','yes')
+            hidden('area','default')

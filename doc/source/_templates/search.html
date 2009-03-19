@@ -1,0 +1,37 @@
+import 'sphinx'
+
+layout
+
+def js_links():
+    js('_static/jquery.js')
+    js('_static/searchtools.js')
+
+    
+def body():
+    h1: 'Search'
+    p: """
+        From here you can search these documents. Enter your search
+        words into the box below and click "search". Note that the search
+        function will automatically search for all of the words. Pages
+        containing fewer words won't appear in the result list.
+        """
+    form( action='', method='' ):
+        textfield( 'q', size='18' )
+        submit('Search')
+        span( id='search-progress' ): ' '
+
+        hidden('check_keywords','yes')
+        hidden('area','default')
+    
+    [results](search_results)
+
+def results():    
+    div(id='search-results')
+    ul:
+        [ result( $value.href,$value.caption,$value.context ) ](search_results)
+        
+def result(href,caption,cxt):
+    li:
+        a(href=href): caption
+        div(class='context'):
+            ctx
