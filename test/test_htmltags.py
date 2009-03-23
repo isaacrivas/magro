@@ -27,7 +27,7 @@ html:
         div( id='d1', class='c1' )
 
 """
-        result = '<html><body onload=""><div id="d1" class="c1"/></body></html>'
+        result = '<html><body onload=""><div id="d1" class="c1"></div></body></html>'
         self.compare( source, result )
                 
 if __name__ == '__main__':

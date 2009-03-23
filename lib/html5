@@ -33,10 +33,10 @@ def style():
 ################################################################################
 
 def script():
-    tag('script', $undeclared): $
+    tag('script', 'force', $undeclared): $
 
 def noscript():
-    tag('noscript', $undeclared): $
+    tag('noscript', 'force', $undeclared): $
 
 ################################################################################
 # 4.4 Sections
@@ -180,7 +180,7 @@ def sup():
     tag('sup', $undeclared): $
 
 def span():
-    tag('span', $undeclared): $
+    tag('span', 'force', $undeclared): $
 
 def i():
     tag('i', $undeclared): $
@@ -348,14 +348,14 @@ def legend():
     tag('legend', $undeclared): $
 
 def div():
-    tag('div', $undeclared): $
+    tag('div', 'force', $undeclared): $
 
 ################################################################################
 # Internal functions
 ################################################################################
 
-def tag(_tagname):
+def tag(_tagname, _force_close=''):
     '<'_tagname
     [ ' ' $key '="' $value '"' ]($undeclared)
-    [ '>' $ '<']($)
-    '/' [_tagname]($) '>'
+    [ '>' $ '<']($ _force_close)
+    '/' [_tagname]($ _force_close) '>'
