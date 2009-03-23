@@ -316,7 +316,7 @@ def option():
     tag('option', $undeclared): $
 
 def textarea():
-    tag('textarea', $undeclared): $
+    tag('textarea', 'force', $undeclared): $
 
 def output():
     tag('output', $undeclared): $

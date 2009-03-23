@@ -24,6 +24,10 @@ def jquery():
 def textfield(name='', value=''):
     input( type='text', name=name, value=value, $undeclared )
 
+def textbox(name='', value=''):
+    textarea( name=name, $undeclared ):
+        value
+    
 def hidden(name='', value=''):
     input( type='hidden', name=name, value=value, $undeclared )
 
