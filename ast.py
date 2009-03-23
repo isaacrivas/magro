@@ -204,7 +204,7 @@ class CycleNode( Node ):
         mycontext['$last'] = p.islast and 'True' or ''
         mycontext['$notlast'] = (not p.islast) and 'True' or ''
         if p.name: mycontext['$key'] = p.name
-        if p.value: mycontext['$value'] = p.value
+        mycontext['$value'] = p.value
         for c in self.code:
             result += unicode( c.eval(mycontext) )
         return result
