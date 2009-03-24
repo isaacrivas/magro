@@ -1,5 +1,7 @@
 from StringIO import StringIO
 
+DEF_PREFIX = '!DEF!'
+
 class Node:
     def __init__(self):
         pass
@@ -86,13 +88,13 @@ class DefNode( Node ):
                     undeclared.append(p)
             i+=1
         context['$undeclared'] = undeclared
-
+        
         #search default values for undefined parameters
         i = 1
         for p in self.params:
             if not context.has_key(p.name):
-                ivar = '$%d'%(i,)
-                if context.has_key( ivar ) and not params[i-1].name:
+                if i<=len(params) and not params[i-1].name:
+                    ivar = '$%d'%(i,)
                     context[p.name] = context[ivar]
                 else:
                     context[p.name] = p.eval(context)
@@ -123,24 +125,29 @@ class CallNode( Node ):
         self.contents = contents
        
     def eval( self, context ):
-        if not context.has_key(self.name):
-            return ''
-            
-        symbol = context[ self.name ]
-        typenames = gettypenames( symbol )
-        
+        symbol = None
         target = None
-        for typename in typenames:
-            if ('@'+typename) in context:
-                target = symbol
-                symbol = context['@'+typename]
-                break
+
+        if not context.has_key(self.name):
+            try:
+                symbol = context[DEF_PREFIX+self.name]
+            except:
+                return ''
+        else:
+            symbol = context[ self.name ]
+            typenames = gettypenames( symbol )
+            
+            for typename in typenames:
+                if ('@'+typename) in context:
+                    target = symbol
+                    symbol = context['@'+typename]
+                    break
         
         if hasattr(symbol,'execute'):
             thecontents = ''
             mycontext = context.copy()
             for c in self.contents:
-                thecontents += c.eval(mycontext)
+                thecontents += unicode( c.eval(mycontext) )
             mycontext['$'] = thecontents
 
             if target:

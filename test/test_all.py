@@ -11,5 +11,6 @@ if __name__ == '__main__':
         'test.test_context',
         'test.test_templates',
         'test.test_htmltags',
+        'test.test_bugs',
     ])
     unittest.TextTestRunner(verbosity=2).run(suite)

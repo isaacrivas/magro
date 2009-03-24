@@ -36,9 +36,9 @@ def p_import(p):
 def p_definition(p):
     "definition : DEF SYMBOL paramdefs ':' callsorblock"
     node = DefNode( name=p[2], params=p[3], code=p[5])
-    p.parser.context[ node.name ] = node
+    p.parser.context[ DEF_PREFIX+node.name ] = node
     if ( hasattr(p.parser,'currentmodule') ):
-        p.parser.context[ p.parser.currentmodule+'.'+node.name ] = node
+        p.parser.context[ DEF_PREFIX+p.parser.currentmodule+'.'+node.name ] = node
     p[0] = node
 
 def p_typerenderer(p):
