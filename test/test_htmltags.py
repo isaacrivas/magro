@@ -13,7 +13,8 @@ class TestHtmlTags( unittest.TestCase ):
         env.path.append("./lib")
 
     def compare(self, text, result ):
-        self.assertEqual( parse( text ), result )
+        r = parse( text )
+        self.assertEqual( r, result )
 
     def test_path(self):
         print env.path,
@@ -29,7 +30,35 @@ html:
 """
         result = '<html><body onload=""><div id="d1" class="c1"></div></body></html>'
         self.compare( source, result )
-                
+
+    def testindentation(self):
+        source = """
+import 'html5'
+
+html:
+    body(onload=''):
+        div( id='d1', class='c1' ):
+            '123'
+            '456'
+    script:
+        'var a=1;'
+
+"""
+        env.settings['html.indentsize'] = 4
+        result = """\
+<html>
+    <body onload="">
+        <div id="d1" class="c1">
+            123456
+        </div>
+    </body>
+    <script>
+        var a=1;
+    </script>
+</html>"""
+        self.compare( source, result )
+
+        
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestHtmlTags)
     unittest.TextTestRunner(verbosity=2).run(suite)

@@ -65,6 +65,17 @@ class TestLex( unittest.TestCase ):
             symbols,
             ['IMPLICIT']*7 )
             
+    def testindentvalue(self):
+        text = "a\n    b\n        c"
+        tokfun = tokenizer( text )
+        tok = tokfun() #symbol
+        tok = tokfun() #eof
+        tok = tokfun() #indent
+        self.assertEqual( tok.value, 1 )
+        tok = tokfun() #symbol
+        tok = tokfun() #eof
+        tok = tokfun() #indent
+        self.assertEqual( tok.value, 2 )
         
     def testindentation(self):
         self.dotest(

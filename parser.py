@@ -49,7 +49,7 @@ def p_typerenderer(p):
     
 def p_block(p):
     'block : INDENT calls DEDENT'
-    p[0] = p[2]
+    p[0] = BlockNode( p[2], p[1] )
     
 def p_calls(p):
     """calls : calls call
@@ -91,7 +91,7 @@ def p_implicit(p):
     
 def p_cycle(p):
     "cycle : '[' exprs ']' callparams"
-    p[0] = CycleNode( params=p[4], code=p[2] )
+    p[0] = CycleNode( params=p[4], code=BlockNode(p[2]) )
 
 def p_simplecall(p):
     'simplecall : SYMBOL callparams'
@@ -109,7 +109,7 @@ def p_callsorblock(p):
     """callsorblock : EOL block
                     | exprs EOL"""
     if hasattr(p[1],'__iter__'):
-        p[0] = p[1]
+        p[0] = BlockNode(p[1])
     else:
         p[0] = p[2]
     
@@ -187,9 +187,11 @@ def p_nop(p):
 
 def p_error(p):
     if p:
-        raise SyntaxError( "Error at token %s"%(p, ) )
+        msg = "Error at token %s"%(p, )
     else:
-        raise SyntaxError( "EOF reached prematurely" )
+        msg = "EOF reached prematurely"
+    print msg
+    raise SyntaxError( msg )
 
 #Public interface
 

@@ -18,18 +18,18 @@ class TestAst( unittest.TestCase ):
 
     def testdef(self):
         name = 'adef'
-        code = [
+        code = BlockNode([
             StringNode('ab'),
             StringNode('cd'),
             StringNode('ef'),
-        ]
+        ])
         text = 'abcdef'
         node = DefNode( name, [], code )
-        self.assertEqual( node.execute([],{}), text )
+        self.assertEqual( node.execute([],'',{}), text )
 
     def testcall(self):
         name = 'dummy'
-        code = [ StringNode('Done') ]
+        code = BlockNode([ StringNode('Done') ])
         defnode = DefNode( name, [], code )
         context = { 'dummy':defnode }
         text = 'Done'
@@ -39,12 +39,12 @@ class TestAst( unittest.TestCase ):
 
     def testcallcontents(self):
         name = 'dummy'
-        code = [ StringNode('>|'), ImplicitNode('$'), StringNode('|<')]
+        code = BlockNode([ StringNode('>|'), ImplicitNode('$'), StringNode('|<')])
         defnode = DefNode( name, [], code )
         context = { 'dummy':defnode }
         thecontents = 'Thisisthecontents'
         text = '>|'+thecontents+'|<'
-        contents = [StringNode(thecontents)]
+        contents = BlockNode([StringNode(thecontents)])
         node = CallNode( name, contents=contents )
         self.assertEqual(node.eval(context),text)
 
@@ -70,7 +70,7 @@ class TestAst( unittest.TestCase ):
     def testcallwithparams(self):
         name = 'dummy'
         paramdefs = [ ParamNode('p1') ]
-        code = [ StringNode('<'), CallNode('p1'), StringNode('>'), ]
+        code = BlockNode([ StringNode('<'), CallNode('p1'), StringNode('>'), ])
         defnode = DefNode( name, paramdefs, code )
         context = { 'dummy':defnode }
         
@@ -83,7 +83,7 @@ class TestAst( unittest.TestCase ):
     def testcalllwithblockparam(self):
         name = 'dummy'
         paramdefs = [ ParamNode('p1') ]
-        code = [ StringNode('<'), CallNode('p1'), StringNode('>'), ]
+        code = BlockNode([ StringNode('<'), CallNode('p1'), StringNode('>'), ])
         defnode = DefNode( name, paramdefs, code )
         context = { 'dummy':defnode }
         
@@ -101,7 +101,7 @@ class TestAst( unittest.TestCase ):
     def testparamdefaultvalue(self):
         name = 'dummy'
         paramdefs = [ ParamNode('p1',StringNode('d1')) ]
-        code = [ StringNode('<'), CallNode('p1'), StringNode('>'), ]
+        code = BlockNode([ StringNode('<'), CallNode('p1'), StringNode('>'), ])
         defnode = DefNode( name, paramdefs, code )
         context = { 'dummy':defnode }
         
@@ -112,7 +112,7 @@ class TestAst( unittest.TestCase ):
         self.assertEqual(node.eval(context),text)
 
     def testcycle(self):
-        code = [ ImplicitNode('$key'), StringNode('='), ImplicitNode('$value'), StringNode(' '), ]
+        code = BlockNode([ ImplicitNode('$key'), StringNode('='), ImplicitNode('$value'), StringNode(' '), ])
         params = [
             ParamNode('p1',StringNode('v1')),
             ParamNode('p2',StringNode('v2')),
@@ -123,13 +123,13 @@ class TestAst( unittest.TestCase ):
         self.assertEqual(node.eval({}),text)
 
     def testtypenode(self):
-        node = TypeDefNode( name='NoneType', params=[] , code=[
+        node = TypeDefNode( name='NoneType', params=[] , code=BlockNode([
             StringNode('>Empty<(i.e. '),
             ImplicitNode('$object'),
             StringNode(')'),
-        ])
+        ]))
         text = '>Empty<(i.e. None)'
-        self.assertEqual( node.execute( None, [], {} ),text )
+        self.assertEqual( node.execute( None, [], '', {} ),text )
         
 
 if __name__ == '__main__':

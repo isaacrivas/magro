@@ -355,7 +355,15 @@ def div():
 ################################################################################
 
 def tag(_tagname, _force_close=''):
-    '<'_tagname
-    [ ' ' $key '="' $value '"' ]($undeclared)
-    [ '>' $ '<']($ _force_close)
+    _prefix_($level) '<' _tagname [ ' ' $key '="' $value '"' ]($undeclared)
+    [ '>' _innerhtml_($nextlevel,$) _prefix_($level,'EOL') '<' ]($ _force_close)
     '/' [_tagname]($ _force_close) '>'
+
+def _prefix_( level, useeol='' ):
+    [ _indent_(level,$value, useeol) ](settings.html.indentsize)
+    
+def _indent_( level, size, _eol ):
+    ['\n'](level _eol) [ `' '*(int(level)*int(size))` ](level)
+
+def _innerhtml_( level, contents ):
+    [[ _indent_(level,settings.html.indentsize) ](settings.html.indentsize)]( `len(contents) and contents[0] != '\n'` ) contents

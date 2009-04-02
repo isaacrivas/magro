@@ -2,6 +2,7 @@ import os
 
 PATHVARNAME='MAGRO_PATH'
 path=['.']
+settings={}
 
 if os.environ.has_key(PATHVARNAME):
     pathvar = os.environ[PATHVARNAME]

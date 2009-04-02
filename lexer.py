@@ -77,13 +77,14 @@ def t_error(t):
 def processindentation( lexer, blanks ):
     indentsize =  blanks and len( blanks ) or 0
         
+    indentlevel = len(lexer.levels)
     if ( indentsize > lexer.levels[-1] ):
         lexer.levels.append( indentsize )
-        lexer.pendingtokens.append( createIndent( indentsize ) )
+        lexer.pendingtokens.append( createIndent( indentlevel ) )
     else:
         while ( indentsize < lexer.levels[-1] ):
-            dedentsize = lexer.levels.pop()
-            lexer.pendingtokens.append( createDedent( dedentsize ) )
+            lexer.levels.pop()
+            lexer.pendingtokens.append( createDedent( indentlevel ) )
 
 def createToken( type, value ):
     indent_token = lex.LexToken()

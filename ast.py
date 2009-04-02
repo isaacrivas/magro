@@ -1,5 +1,5 @@
 from StringIO import StringIO
-
+import magro.env as env
 DEF_PREFIX = '!DEF!'
 
 class Node:
@@ -8,6 +8,28 @@ class Node:
 
     def eval( self, context ):
         return ''
+
+class BlockNode():
+    def __init__(self,code,level=0):
+        self.code=[]
+        self.code.extend(code)
+        self.level = level
+
+    def eval(self,context,uselevel=False):
+        buffer = StringIO()
+        if uselevel:
+            context = context.copy()
+            context['$level'] = self.level
+            context['$nextlevel'] = self.level+1
+            if self.level: context['$previouslevel'] = self.level-1
+        for s in self.code:
+            text = unicode(s.eval( context ))
+            if text: buffer.write(text)
+
+        result = buffer.getvalue()
+        buffer.close()
+        return result
+
 
 class RootNode( Node ):
     def __init__(self, code=[], defs={} ):
@@ -20,6 +42,8 @@ class RootNode( Node ):
         for k,v in self.defs.items():
             if k not in context:
                 context[k] = v
+        for k,v in env.settings.items():
+            context['settings.'+k] = v
 
         return self.code.eval( context )
     
@@ -31,7 +55,7 @@ class StringNode( Node ):
     def eval( self, context ):
         return self.value
 
-    def __str__(self):
+    def __repr__(self):
         return 'StringNode("%s")'%(self.value,)
 
         
@@ -45,15 +69,15 @@ class ImplicitNode( Node ):
         except KeyError:
             return ''
 
+    def __repr__(self):
+        return 'ImplicitNode("%s")'%(self.name,)
+
 class DefNode( Node ):
     def __init__(self, name, params, code):
         self.name = name
         self.params = params
         self.paramnames = [ p.name for p in self.params ]
-        if hasattr(code,'__iter__'):
-            self.code = BlockNode(code)
-        else:
-            self.code = code
+        self.code = code
         
     def expandparams( self, params, context ):
         expanded = []
@@ -75,6 +99,7 @@ class DefNode( Node ):
         iunnamed = 0
         for p in params:
             value = p.eval(context)
+            
             context[ '$%d'%(i,) ] = value
             if p.name:
                 context[ p.name ] = value
@@ -100,8 +125,9 @@ class DefNode( Node ):
                     context[p.name] = p.eval(context)
             i+=1
 
-    def execute( self, params, context ):
+    def execute( self, params, contents, context ):
         self.processparams( params, context)
+        context['$'] = contents
         return self.code.eval(context)
 
 class ParamNode( Node ):
@@ -119,7 +145,7 @@ class ParamNode( Node ):
         return 'Param( "%s", %s )'%(self.name,self.value,)
             
 class CallNode( Node ):
-    def __init__(self, name, params=[], contents=[]):
+    def __init__(self, name, params=[], contents=BlockNode([])):
         self.name = name
         self.params = params
         self.contents = contents
@@ -144,18 +170,18 @@ class CallNode( Node ):
                     break
         
         if hasattr(symbol,'execute'):
-            thecontents = ''
             mycontext = context.copy()
-            for c in self.contents:
-                thecontents += unicode( c.eval(mycontext) )
-            mycontext['$'] = thecontents
+            contents = self.contents.eval(mycontext, True)
 
             if target:
-                return symbol.execute( target, self.params, mycontext )
+                return symbol.execute( target, self.params, contents, mycontext )
             else:
-                return symbol.execute( self.params, mycontext )
+                return symbol.execute( self.params, contents, mycontext )
         else:
             return symbol
+    
+    def __repr__(self):
+        return 'CallNode("%s")'%(self.name)    
 
 class EvalParam():
     def __init__( self, pos, name, value, islast ):
@@ -165,7 +191,7 @@ class EvalParam():
         self.islast = islast
             
 class CycleNode( Node ):
-    def __init__(self, params=[], code=[]):
+    def __init__(self, params=[], code=BlockNode([])):
         self.params = params
         self.code = code
     
@@ -204,7 +230,6 @@ class CycleNode( Node ):
             i+=1
 
     def execparam(self, p, context ):
-        result = ''
         mycontext = context.copy()
         mycontext['$index'] = p.pos
         mycontext['$first'] = p.pos == 0 and 'True' or ''
@@ -212,9 +237,7 @@ class CycleNode( Node ):
         mycontext['$notlast'] = (not p.islast) and 'True' or ''
         if p.name: mycontext['$key'] = p.name
         mycontext['$value'] = p.value
-        for c in self.code:
-            result += unicode( c.eval(mycontext) )
-        return result
+        return self.code.eval(mycontext)
 
 class GroupNode( Node ):
     def __init__(self,value):
@@ -223,21 +246,6 @@ class GroupNode( Node ):
 
     def eval(self,context):
         return self.value
-
-class BlockNode():
-    def __init__(self,code):
-        self.code=[]
-        self.code.extend(code)
-
-    def eval(self,context):
-        buffer = StringIO()
-        for s in self.code:
-            text = unicode(s.eval( context ))
-            if text: buffer.write(text)
-
-        result = buffer.getvalue()
-        buffer.close()
-        return result
 
 class PycodeNode( Node ):
     def __init__(self, code='', globals={} ):
@@ -258,10 +266,10 @@ class TypeDefNode( Node ):
         self.name = name
         self.defnode = DefNode(name, params, code)
 
-    def execute( self, target, params, context ):
+    def execute( self, target, params, contents, context ):
         mycontext = context.copy()
         mycontext['$object'] = target
-        return self.defnode.execute( params, mycontext )
+        return self.defnode.execute( params, contents, mycontext )
         
 def buildaccessor( locals ):
     def accessor(key):

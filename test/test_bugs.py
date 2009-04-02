@@ -29,6 +29,22 @@ def child( _p1 ):
         expected = "2;A!B"
         self.compare(source,expected);
 
+
+    def testcontentsasparam(self):
+        source = """
+call:
+    '#'
+
+def call():
+    put($):
+        '?'
+
+def put( param ):
+    param
+"""
+        expected = "#"
+        self.compare(source,expected);
+        
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestBugs)
     unittest.TextTestRunner(verbosity=2).run(suite)
