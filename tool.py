@@ -1,4 +1,5 @@
 import magro.parser as parser
+import magro.env as env
 import sys
 import os.path
 from optparse import OptionParser
@@ -19,6 +20,8 @@ if __name__ == '__main__':
                          help='Use input file name with EXT as extension as output filename', metavar='EXT' )
     opparser.add_option( '-v', action='store_true', dest='verbose', default=False,
                          help='Set verbose mode' )
+    opparser.add_option( '-s', action='append', dest='settings', metavar='KEY=VALUE',
+                         help='Set magro.env.settings[KEY] = VALUE' )
     (options, args) = opparser.parse_args()
 
     if options.outfile and options.fileext:
@@ -26,6 +29,11 @@ if __name__ == '__main__':
     
     result = ''
     if len(args) > 0:
+        if options.settings:
+            for s in options.settings:
+                (key,value,) = s.split('=')
+                env.settings[key] = value
+    
         filenames = args
         for filename in filenames:
             if options.verbose:
