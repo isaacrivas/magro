@@ -205,18 +205,28 @@ def parse( input, context={} ):
     root = compile(input)
     return root.eval( context )
 
+import_cache = {}
+
 def importfile( filename, context ):
     fullpath = env.searchfile( filename )
     if fullpath:
+        if import_cache.has_key( fullpath ):
+            context.update( import_cache[fullpath] )
+            return
+        
         f = open( fullpath )
         text = f.read()
         f.close()
 
+        myctx = {}
         pr = yacc.yacc()
-        pr.context = context
+        pr.context = myctx
         pr.globals = {}
         pr.currentmodule = filename
         pr.parse( tokenfunc=tokenizer(text) )
+        
+        import_cache[fullpath] = myctx
+        context.update(myctx)
     else:
         print "WARNING: %s file not found"%(filename,)
         
