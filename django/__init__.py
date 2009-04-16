@@ -7,6 +7,13 @@ from magro.context import Context
 _templates_cache = {}
 _env_prepared = False
 
+class ResponseMiddleware:
+    def process_response(self, request, response):
+        if 'X-MAGRO' in response:
+            prepare_env()
+            response.content =  magro.parser.parse( response.content )
+        return response
+
 class TemplateNotFound(Exception):
     pass
 
