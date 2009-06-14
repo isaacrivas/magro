@@ -4,8 +4,7 @@ import magro.parser
 import magro.env
 from magro.context import Context
 
-_templates_cache = {}
-_env_prepared = False
+import django.template as original
 
 class ResponseMiddleware:
     def process_response(self, request, response):
@@ -14,44 +13,30 @@ class ResponseMiddleware:
             response.content =  magro.parser.parse( response.content )
         return response
 
-class TemplateNotFound(Exception):
-    pass
-
-def render_to_response( templatename, context, **kwargs):
-    global _templates_cache
-    """
-    Returns a HttpResponse whose content is filled with the result of calling
-    the specified magro template with the passed arguments.
-    """
-    httpresponse_kwargs = {'mimetype': kwargs.pop('mimetype', None)}
-    
-    response = ''
-    template = None
-    
-    prepare_env()
-    fullpath = magro.env.searchfile( templatename )
-    if fullpath:
+class Template( object ):
+    def __init__(self, template_string, origin=None, name='<Unknown Template>'):
+        self.original = None
         try:
-            template = _templates_cache[ fullpath ]
-            print 'Read %s from cache'%(fullpath,)
-        except KeyError:
-            print 'Compiling %s'%(fullpath,)
-            f = open( fullpath )
-            templatecode = f.read()
-            f.close()
-            template = magro.parser.compile( templatecode )
-            _templates_cache[ fullpath ] = template
-    else:
-        raise TemplateNotFound( templatename )
-    
-    if template:
-        response = template.eval( Context( context ) )
-    
-    return HttpResponse(response, **httpresponse_kwargs)
+            self.rootnode = magro.parser.compile( template_string )
+        except:
+            self.original = OriginalTemplateClass( template_string, origin, name )
+        self.name = name
 
-def prepare_env():
-    global _env_prepared
-    if _env_prepared: return
-    print 'Preparing magro environment'
-    magro.env.path.extend( settings.TEMPLATE_DIRS )
-    _env_prepared = True
+    def __iter__(self):
+        if self.original:
+            yield self.original.__iter__()
+        else:
+            for node in self.rootnode.code:
+                for subnode in node.code:
+                    yield subnode
+
+    def render(self, context):
+        "Display stage -- can be called many times"
+        if self.original:
+            return self.original.render(context)
+        else:
+            return self.rootnode.eval(context.dicts[0])
+
+
+OriginalTemplateClass = original.Template
+original.Template = Template
