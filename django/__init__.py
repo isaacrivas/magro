@@ -16,10 +16,10 @@ class ResponseMiddleware:
 class Template( object ):
     def __init__(self, template_string, origin=None, name='<Unknown Template>'):
         self.original = None
-        try:
-            self.rootnode = magro.parser.compile( template_string )
-        except:
+        if '{%' in template_string:
             self.original = OriginalTemplateClass( template_string, origin, name )
+        else:
+            self.rootnode = magro.parser.compile( template_string )
         self.name = name
 
     def __iter__(self):
