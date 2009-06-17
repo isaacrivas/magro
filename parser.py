@@ -2,7 +2,8 @@ from lexer import *
 from ast import *
 import ply.yacc as yacc
 import env
-
+import os
+import stat
 
 def p_program(p):
     'program : statements'
@@ -210,8 +211,9 @@ import_cache = {}
 def importfile( filename, context ):
     fullpath = env.searchfile( filename )
     if fullpath:
-        if import_cache.has_key( fullpath ):
-            context.update( import_cache[fullpath] )
+        filestat = os.stat(fullpath)
+        if import_cache.has_key( fullpath ) and import_cache[fullpath][1] >= filestat[stat.ST_MTIME]:
+            context.update( import_cache[fullpath][0] )
             return
         
         f = open( fullpath )
@@ -225,7 +227,7 @@ def importfile( filename, context ):
         pr.currentmodule = filename
         pr.parse( tokenfunc=tokenizer(text) )
         
-        import_cache[fullpath] = myctx
+        import_cache[fullpath] = (myctx, filestat[stat.ST_MTIME])
         context.update(myctx)
     else:
         print "WARNING: %s file not found"%(filename,)
