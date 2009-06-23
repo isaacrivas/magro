@@ -62,6 +62,7 @@ def p_calls(p):
 
 def p_call(p):
     """call : fullcall
+            | cyclecall
             | exprs EOL"""
     p[0] = p[1]
 
@@ -106,6 +107,10 @@ def p_fullcall(p):
     "fullcall : SYMBOL callparams ':' callsorblock"
     p[0] = CallNode( name=p[1], params=p[2], contents=p[4] )
 
+def p_cyclecall(p):
+    "cyclecall : callparams ':' callsorblock"
+    p[0] = CycleNode( params=p[1], code=p[3] )
+    
 def p_callsorblock(p):
     """callsorblock : EOL block
                     | exprs EOL"""

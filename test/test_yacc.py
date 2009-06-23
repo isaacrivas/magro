@@ -103,6 +103,12 @@ def bar(baz): baz $
     '[' [ $value ',']($object) ']'
 """);
 
+    def testaltcycle(self):
+        self.accept("""
+('1','2','3'):
+    'a' $value
+""");
+
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestYacc)
     unittest.TextTestRunner(verbosity=2).run(suite)

@@ -288,6 +288,19 @@ def m():
 """
         result = "ABC"
         self.compare( source, result )
+
+    def testcyclecall(self):
+        source = """
+def a():
+    'A' $
+        
+('1','2','3'):
+    a:
+        $value
+"""
+        result = "A1A2A3"
+        self.compare( source, result )
+        
         
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestResults)

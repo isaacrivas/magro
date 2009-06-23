@@ -59,3 +59,16 @@ SYMBOL( p1, p2, p3 ): #call name with parameters.
     contents
     
 #Every name is a call, the :  just tells what is going to be the content parameter.
+
+#if and else are implicit!
+(error): #if error
+    'Error message'
+:(warning): #else if warning
+    'Warning message'
+: #else
+    'success'
+
+#new cicle syntax (alternative)!
+(value1,value2,value3): #[ code ](value1,value2,value3)
+    code($key):
+        $value
