@@ -131,6 +131,19 @@ class TestAst( unittest.TestCase ):
         text = '>Empty<(i.e. None)'
         self.assertEqual( node.execute( None, [], '', {} ),text )
         
+    def testcycleelse(self):
+        code = BlockNode([ StringNode('True') ])
+        elsecode = BlockNode([ StringNode('False') ])
+        params = [
+            ParamNode('p1',StringNode('v1')),
+            ParamNode(None,StringNode('')),
+            ParamNode('p3',StringNode('')),
+            ParamNode(None,StringNode('v4')),
+            ParamNode(None,CallNode('non')),
+        ]
+        text = 'TrueFalseTrueTrueFalse'
+        node = CycleNode( params, code, elsecode )
+        self.assertEqual(node.eval({}),text)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestAst)

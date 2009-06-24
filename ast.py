@@ -191,15 +191,18 @@ class EvalParam():
         self.islast = islast
             
 class CycleNode( Node ):
-    def __init__(self, params=[], code=BlockNode([])):
+    def __init__(self, params=[], code=BlockNode([]), elsecode=None ):
         self.params = params
         self.code = code
+        self.elsecode = elsecode
     
     def eval( self, context ):
         result = ''
         for p in self.paramsgenerator( context ):
             if p.name or p.value:
-                result += self.execparam( p, context )
+                result += self.execparam( p, self.code,context )
+            elif self.elsecode:
+                result += self.execparam( p, self.elsecode,context )
         return result
         
     def paramsgenerator( self, context ):
@@ -229,7 +232,7 @@ class CycleNode( Node ):
                 ik+=1
             i+=1
 
-    def execparam(self, p, context ):
+    def execparam(self, p, code, context ):
         mycontext = context.copy()
         mycontext['$index'] = p.pos
         mycontext['$first'] = p.pos == 0 and 'True' or ''
@@ -237,7 +240,7 @@ class CycleNode( Node ):
         mycontext['$notlast'] = (not p.islast) and 'True' or ''
         if p.name: mycontext['$key'] = p.name
         mycontext['$value'] = p.value
-        return self.code.eval(mycontext)
+        return code.eval(mycontext)
 
 class GroupNode( Node ):
     def __init__(self,value):
