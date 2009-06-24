@@ -78,7 +78,6 @@ def p_exprs(p):
 def p_expr(p):
     """expr : string
             | implicit
-            | cycle
             | simplecall
             | pycode"""
     p[0] = p[1]
@@ -90,10 +89,6 @@ def p_string(p):
 def p_implicit(p):
     "implicit : IMPLICIT"
     p[0] = ImplicitNode(p[1])
-    
-def p_cycle(p):
-    "cycle : '[' exprs ']' callparams"
-    p[0] = CycleNode( params=p[4], code=BlockNode(p[2]) )
 
 def p_simplecall(p):
     'simplecall : SYMBOL callparams'
@@ -108,7 +103,7 @@ def p_fullcall(p):
     p[0] = CallNode( name=p[1], params=p[2], contents=p[4] )
 
 def p_cyclecall(p):
-    "cyclecall : callparams ':' callsorblock"
+    "cyclecall : cycleparams ':' callsorblock"
     p[0] = CycleNode( params=p[1], code=p[3] )
     
 def p_callsorblock(p):
@@ -142,7 +137,11 @@ def p_paramname(p):
         p[0] = ParamNode( p[1], StringNode(p[3]) )
     else:
         p[0] = ParamNode( p[1], None )
-    
+
+def p_cycleparams(p):
+    "cycleparams : '[' paramvalues ']'"
+    p[0] = p[2]
+
 def p_callparams(p):
     """callparams : '(' paramvalues ')'
                   | empty"""

@@ -100,18 +100,20 @@ macro( '1', p3='3')
 macro( '4', '5', '6', p7='7')
         
 def macro( p1, p2='II' ):
-    '(' p1 ',' p2 [ ',' $value ]($undeclared) ')'
+    '(' p1 ',' p2
+    [ $undeclared ]: ',' $value
+    ')'
 """
         result = "(1,II,3)(4,5,6,7)"
         self.compare( source, result )
         
     def testcycle1(self):
-        source = "[$value]('1','2','3')\n"
+        source = "['1','2','3']: $value\n"
         result = "123"
         self.compare( source, result )
 
     def testcycle2(self):
-        source = "[ $key '=' $value ' '](one='1',two='2',three='3')\n"
+        source = "[ one='1',two='2',three='3']: $key '=' $value ' '\n"
         result = "one=1 two=2 three=3 "
         self.compare( source, result )
 
@@ -120,7 +122,7 @@ def macro( p1, p2='II' ):
 f(one='1',two='2','3')
 
 def f():
-    [ $key '=' $value ' ']($all)
+    [$all]: $key '=' $value ' '
 """
         result = "one=1 two=2 =3 "
         self.compare( source, result )
@@ -130,7 +132,9 @@ def f():
 tag(name='div', id='d1', class='c1')
 
 def tag(name):
-    '<' name [ ' ' $key '="' $value '"']($undeclared) '>'
+    '<' name
+    [$undeclared]: ' ' $key '="' $value '"'
+    '>'
 """
         result = '<div id="d1" class="c1">'
         self.compare( source, result )
@@ -140,13 +144,21 @@ def tag(name):
 tag(name='div', id='d1', class='c1')
 
 def tag(name):
-    '<' name [ [' ' $key '="' $value '"']($value) ]( ($undeclared) ) '>'
+    '<' name
+    [($undeclared)]:
+        [$value]: ' ' $key '="' $value '"'
+    '>'
 """
         result = '<div id="d1" class="c1">'
         self.compare( source, result )
 
     def testcyclenamedgroup(self):
-        source = "[ $key '={' [ $value ' ' ]($value) '} ' ]( a=('1', '2', '3'), b=('A','B','C') )\n"
+        source = """
+[ a=('1', '2', '3'), b=('A','B','C') ]:
+    $key '={'
+    [$value]: $value ' '
+    '} '
+"""
         result = 'a={1 2 3 } b={A B C } '
         self.compare( source, result )
 
@@ -160,31 +172,35 @@ if(''):
     "this shouldn't be printed"
 
 def if( condition ):
-    [ $ ](condition)
+    [condition]: $
 """
         result = "this should be printed"
         self.compare( source, result )
 
     def testcycleconditions(self):
         source = """
-[ 'yes' ]('true')
-[ 'yes' ](somekey='')
-[ 'no' ]('')
+['true']: 'yes'
+[somekey='']: 'yes'
+['']: 'no'
 """
         result = "yesyes"
         self.compare( source, result )
 
     def testcycleimplicits(self):
-        self.compare( "[$index]('a','b','c')\n",'012' )
-        self.compare( "[$value]('a','b','c')\n",'abc' )
-        self.compare( "[$key](A='a',B='b',C='c')\n",'ABC' )
+        self.compare( "['a','b','c']: $index\n",'012' )
+        self.compare( "['a','b','c']: $value\n",'abc' )
+        self.compare( "[A='a',B='b',C='c']: $key\n",'ABC' )
 
         source = u"""
 
 cycle('A','B','C')
         
 def cycle():
-    [ ['{']($first) $value [', ']($notlast) ['}']($last) ](`range(1,4)`, $undeclared, '$' )\n
+    [ `range(1,4)`, $undeclared, '$' ]:
+        [$first]: '{'
+        $value
+        [$notlast]: ', '
+        [$last]: '}'
 """
         result = "{1, 2, 3, A, B, C, $}"
         self.compare( source, result )
@@ -199,7 +215,10 @@ def divs( id ):
         tag(name='div', id=id, $undeclared )
         
 def tag(name, hidden):
-    name '(' [$key "='" $value "' "]($undeclared) ')' [ '[' $ ']' ]($)
+    name '('
+    [$undeclared]: $key "='" $value "' "
+    ')'
+    [$]: '[' $ ']'
 """
         result = "div(id='d1' )[div(id='d1' class='c1' )]"
         self.compare( source, result )
@@ -255,12 +274,12 @@ def native( param ):
         self.compare( source, result )
 
     def testpycodecycle(self):
-        source = "[$value](`xrange(1,6)`)\n"
+        source = "[`xrange(1,6)`]: $value\n"
         result = "12345"
         self.compare( source, result )
 
     def testpycodeimplicit(self):
-        source = "[` int(_('$value'))+1 `]( '1','2','3' )\n"
+        source = "['1','2','3']: ` int(_('$value'))+1 `\n"
         result = "234"
         self.compare( source, result )
 
@@ -284,7 +303,7 @@ m1('B',C='C')
 def m1( A ):
     m( A='A' A, $undeclared)
 def m():
-    [$value]($undeclared)
+    [$undeclared]: $value
 """
         result = "ABC"
         self.compare( source, result )
@@ -294,7 +313,7 @@ def m():
 def a():
     'A' $
         
-('1','2','3'):
+['1','2','3']:
     a:
         $value
 """

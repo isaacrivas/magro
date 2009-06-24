@@ -12,9 +12,11 @@ class TestYacc( unittest.TestCase ):
     def reject(self, text):
         try:
             parse( text )
-            self.fail('The text should have been rejected.')
+            fail = True
         except Exception:
-            pass
+            fail = False
+        if fail:
+            self.fail('The text should have been rejected.')
         
     def testminimal(self):
         self.accept( "'hello world'\n" )
@@ -63,7 +65,10 @@ def div():
     def testcycle(self):
         self.accept( """
 def tag(name):
-    '<' name [' ' $key '="' $value '"']($unknown) '>' $ '</' name '>'
+    '<' name
+    [$unknown]:
+        ' ' $key '="' $value '"'
+    '>' $ '</' name '>'
 """ )
 
     def testbadindent(self):
@@ -100,14 +105,33 @@ def bar(baz): baz $
     def testattype(self):
         self.accept("""
 @list():
-    '[' [ $value ',']($object) ']'
+    '['
+    [$object]:
+        $value ','
+    ']'
 """);
 
     def testaltcycle(self):
         self.accept("""
-('1','2','3'):
+['1','2','3']:
     'a' $value
 """);
+
+    def testsingleelse(self):
+        self.reject("""
+:
+    'b'
+""");
+
+
+    def _testcycleelse(self):
+        self.accept("""
+['1','','3']:
+    'a' $value
+:
+    'b'
+""");
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestYacc)

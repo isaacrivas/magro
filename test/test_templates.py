@@ -23,7 +23,7 @@ class TestTemplates( unittest.TestCase ):
         self.assertEqual( res, '' )
 
     def testiter(self):
-        source = '[$value](iter)\n'
+        source = '[iter]: $value\n'
         
         def gen(n):
             i=0
@@ -36,28 +36,35 @@ class TestTemplates( unittest.TestCase ):
         self.assertEqual( res, '123' )
 
     def testarrayarg(self):
-        source = '[$value](array)\n'
+        source = '[array]:$value\n'
 
         ast = compile( source )
         res = ast.eval( { 'array':[1,2,3] } )
         self.assertEqual( res, '123' )
 
     def testarrayargs(self):
-        source = '[ $value ]( a1, a2 )\n'
+        source = '[ a1, a2 ]: $value\n'
 
         ast = compile( source )
         res = ast.eval( { 'a1':[1,2,3],'a2':[4,5,6] } )
         self.assertEqual( res, '123456' )
 
     def testarraygroup(self):
-        source = '[ [$value]($value) ]( (a1),(a2) )\n'
+        source = """
+[ (a1),(a2) ]:
+    [$value]: $value
+"""
 
         ast = compile( source )
         res = ast.eval( { 'a1':[1,2,3],'a2':[4,5,6] } )
         self.assertEqual( res, '123456' )
 
     def testarraynestedgroup(self):
-        source = '[ [ [$value]($value) ]($value) ]( (a1),(a2) )\n'
+        source = """
+[ (a1),(a2) ]:
+    [$value]:
+        [$value]: $value
+"""
 
         ast = compile( source )
         res = ast.eval( { 'a1':[[1],[2,3]],'a2':[[4,5],6] } )

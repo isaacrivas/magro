@@ -355,15 +355,25 @@ def div():
 ################################################################################
 
 def tag(_tagname, _force_close=''):
-    _prefix_($level) '<' _tagname [ ' ' $key '="' $value '"' ]($undeclared)
-    [ '>' _innerhtml_($nextlevel,$) _prefix_($level,'EOL') '<' ]($ _force_close)
-    '/' [_tagname]($ _force_close) '>'
+    _prefix_($level) '<' _tagname
+    [$undeclared]:
+        ' ' $key '="' $value '"'
+    [$ _force_close]: '>' _innerhtml_($nextlevel,$) _prefix_($level,'EOL') '<'
+    '/'
+    [$ _force_close]: _tagname
+    '>'
 
 def _prefix_( level, useeol='' ):
-    [ _indent_(level,$value, useeol) ](settings.html.indentsize)
+    [ settings.html.indentsize ]:
+        _indent_(level,$value, useeol)
     
 def _indent_( level, size, _eol ):
-    ['\n'](level _eol) [ `' '*(int(level)*int(size))` ](level)
+    [level _eol]: '\n'
+    [level]:
+        `' '*(int(level)*int(size))`
 
 def _innerhtml_( level, contents ):
-    [[ _indent_(level,settings.html.indentsize) ](settings.html.indentsize)]( `len(contents) and contents[0] != '\n'` ) contents
+    [ `len(contents) and contents[0] != '\n'` ]:
+        [ settings.html.indentsize ]:
+            _indent_(level,settings.html.indentsize)
+    contents
