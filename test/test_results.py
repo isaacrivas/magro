@@ -335,6 +335,26 @@ def a():
         result = "A1!A3"
         self.compare( source, result )
 
+    def testcycleelif(self):
+        source = """
+def a():
+    'A' $
+        
+['1','','3']:
+    a:
+        $value
+: ['']:
+    '!'
+: ['yes']:
+    '?'
+:
+    'no'
+
+"""
+        result = "A1?A3"
+        self.compare( source, result )
+
+
         
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestResults)
