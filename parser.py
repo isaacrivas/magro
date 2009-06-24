@@ -103,8 +103,8 @@ def p_fullcall(p):
     p[0] = CallNode( name=p[1], params=p[2], contents=p[4] )
 
 def p_cyclecall(p):
-    "cyclecall : cycleparams ':' callsorblock"
-    p[0] = CycleNode( params=p[1], code=p[3] )
+    "cyclecall : cycleparams ':' callsorblock elseblock"
+    p[0] = CycleNode( params=p[1], code=p[3], elsecode=p[4] )
     
 def p_callsorblock(p):
     """callsorblock : EOL block
@@ -113,6 +113,22 @@ def p_callsorblock(p):
         p[0] = BlockNode(p[1])
     else:
         p[0] = p[2]
+
+def p_elseblock(p):
+    """elseblock : ':' exprs EOL
+                 | ':' EOL block
+                 | ':' cyclecall
+                 | empty"""
+    if len(p) > 2:
+        if hasattr(p[2],'__iter__'):
+            p[0] = BlockNode(p[2])
+        elif len(p) > 3:
+            p[0] = p[3]
+        else:
+            p[0] = BlockNode([p[2]])
+    else:
+        p[0] = None
+
     
 def p_paramdefs(p):
     """paramdefs : '(' paramnames ')'

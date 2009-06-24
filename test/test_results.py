@@ -319,7 +319,22 @@ def a():
 """
         result = "A1A2A3"
         self.compare( source, result )
+
+    def testcycleelse(self):
+        source = """
+def a():
+    'A' $
         
+['1','','3']:
+    a:
+        $value
+:
+    '!'
+
+"""
+        result = "A1!A3"
+        self.compare( source, result )
+
         
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestResults)

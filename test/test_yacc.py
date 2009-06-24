@@ -124,7 +124,7 @@ def bar(baz): baz $
 """);
 
 
-    def _testcycleelse(self):
+    def testcycleelse(self):
         self.accept("""
 ['1','','3']:
     'a' $value
