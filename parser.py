@@ -232,8 +232,8 @@ def importfile( filename, context ):
     fullpath = env.searchfile( filename )
     if fullpath:
         filestat = os.stat(fullpath)
-        if import_cache.has_key( fullpath ) and import_cache[fullpath][1] >= filestat[stat.ST_MTIME]:
-            context.update( import_cache[fullpath][0] )
+        if import_cache.has_key( fullpath ) and import_cache[fullpath][0] >= filestat[stat.ST_MTIME]:
+            context.update( import_cache[fullpath][1] )
             return
         
         f = open( fullpath )
@@ -247,7 +247,7 @@ def importfile( filename, context ):
         pr.currentmodule = filename
         pr.parse( tokenfunc=tokenizer(text) )
         
-        import_cache[fullpath] = (myctx, filestat[stat.ST_MTIME])
+        import_cache[fullpath] = (filestat[stat.ST_MTIME],myctx,)
         context.update(myctx)
     else:
         print "WARNING: %s file not found"%(filename,)

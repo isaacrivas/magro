@@ -254,12 +254,13 @@ class PycodeNode( Node ):
     def __init__(self, code='', globals={} ):
         self.code = code
         self.globals = globals
+        if 'import' in self.code:
+            exec self.code in self.globals
        
     def eval( self, context={} ):
         mycontext = context.copy()
         mycontext['_'] = buildaccessor( context )
         if 'import' in self.code:
-            exec self.code in self.globals
             return ''
         else:
             return eval( self.code, self.globals, mycontext )

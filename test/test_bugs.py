@@ -44,6 +44,27 @@ def put( param ):
 """
         expected = "#"
         self.compare(source,expected);
+
+    def testimportinlibrary(self):
+        source = """
+import 'library.tmp'
+_( 'ABC' )
+"""
+        importsource = """
+`import gettext`
+def _( text ):
+    `gettext.gettext( text )`
+
+"""
+        filename = './library.tmp'
+        file = open(filename,'w');
+        file.write(importsource)
+        file.flush()
+        file.close()
+        
+        result = "ABC"
+        self.compare( source, result )
+        os.remove(filename)
         
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestBugs)
