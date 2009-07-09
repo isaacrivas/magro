@@ -260,6 +260,7 @@ class PycodeNode( Node ):
     def eval( self, context={} ):
         mycontext = context.copy()
         mycontext['_'] = buildaccessor( context )
+        mycontext['context'] = context
         if 'import' in self.code:
             return ''
         else:
