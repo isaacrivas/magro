@@ -1,4 +1,5 @@
 .DS_Store
+*.kpf
 *.pyc
 *.out
 parsetab.py
