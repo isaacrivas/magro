@@ -65,6 +65,17 @@ def _( text ):
         result = "ABC"
         self.compare( source, result )
         os.remove(filename)
+
+    def testlastline(self):
+        source = """
+call:
+    '#'
+
+def call():
+    $"""
+        expected = "#"
+        self.compare(source,expected);
+
         
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestBugs)

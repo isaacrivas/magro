@@ -106,7 +106,7 @@ def tokenizer( input ):
     lexer = lex.lex()
     lexer.levels = [ 0 ]
     lexer.pendingtokens = []
-    lexer.input( input.replace('\r','\n') )
+    lexer.input( input.replace('\r','\n') +'\n' )
     def tokenfunc_():
         if len( lexer.pendingtokens ):
             return lexer.pendingtokens.pop(0)
