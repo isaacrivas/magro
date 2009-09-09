@@ -208,7 +208,8 @@ Cycles
 As many template engines, Magro has a special syntax to support loops over a collection of
 items, a set of parameters or an iterator. The syntax for a loop is as follows::
 
-    [ expressions_evaluated_for_each_value ](lists_of_values)
+    [lists_of_values]:
+        expressions_evaluated_for_each_value
 
 Each part has its own rules described below.
 
@@ -217,7 +218,7 @@ The list of values
 
 Syntax example::
 
-    ( optional_key = value, key2 = value2, another_value )
+    [ optional_key = value, key2 = value2, another_value ]
 
 This is a list of values separated by commas (,) very similar to the parameters passed to a
 macro call, but with the following exceptions:
@@ -225,16 +226,24 @@ macro call, but with the following exceptions:
     1. Values that evaluate to an array, will be expanded and iterated
     as if they were single values. For example::
         
-        [ $value ]($all)
+        [ $all ]: $value
         
     Will iterate over all the parameters passed to the macro call, represented
     by the implicit variable ``$all`` that evaluates to an array containing all
     the parameters that were used during the macro call.
         
     2. Values that evaluate to an empty string and don't have a key will be
-    ignored from the loop. This can be used as a simple conditional expression::
+    ignored from the loop. There is a way to define an alternative
+    body block by using a single colon (:) at the same level of indentation right
+    after the main block of the loop. This alternate block will be called for
+    those values of the loop that evaluate to an empty string. This feature
+    can be used to implement a simple conditional expression::
     
-        [ 'This will be printed if condition is not empty' ]( condition )
+        [ condition ]:
+            'This will be printed if condition does not evaluate to empty'
+        :
+            'This will be printed if condition evaluates to empty'
+    
     
 Groups
 ......
@@ -242,7 +251,9 @@ Groups
 Arrays expansion can be prevented by enclosing in parentesis the variables
 that evaluate to an array::
 
-    [ ['A nested loop']($value) ]( firstarray=($all), secondarray=('1','2','3') )
+    [ firstarray=($all), secondarray=('1','2','3') ]:
+        [ $value ]:
+            'A nested loop'
 
 As shown in the example, a set of comma separated expressions can be grouped
 in an array by enclosing them between parentesis. This applies to parameters
@@ -318,7 +329,7 @@ If the variable name is an implicit value or its name has a format incompatible
 with python syntax for variable names, the function ``_( varname )`` can be used
 to retrieve such value::
 
-    [ ' value*10=' `int( _('$value') )*10` ]( '1','2','3' )
+    [ '1','2','3' ]: ' value*10=' `int( _('$value') )*10`
 
 It is recommended that Python expressions used inside templates have no collateral
 effects as that templates should be used only for output presentation.
