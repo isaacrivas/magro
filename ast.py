@@ -1,4 +1,7 @@
-from StringIO import StringIO
+try:
+    from io import StringIO
+except:
+    from StringIO import StringIO
 import magro.env as env
 DEF_PREFIX = '!DEF!'
 
@@ -26,7 +29,7 @@ class BlockNode( Node ):
             context['$nextlevel'] = self.level+1
             if self.level: context['$previouslevel'] = self.level-1
         for s in self.code:
-            text = unicode(s.eval( context ))
+            text = s.eval( context )
             if text: buffer.write(text)
 
         result = buffer.getvalue()
@@ -169,7 +172,7 @@ class CallNode( Node ):
         symbol = None
         target = None
 
-        if not context.has_key(self.name):
+        if not self.name in context:
             try:
                 symbol = context[DEF_PREFIX+self.name]
             except:
@@ -277,7 +280,7 @@ class PycodeNode( Node ):
         self.code = code
         self.globals = globals
         if 'import' in self.code:
-            exec self.code in self.globals
+            exec (self.code in self.globals)
        
     def eval( self, context={} ):
         mycontext = context.copy()

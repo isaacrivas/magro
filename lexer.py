@@ -15,7 +15,8 @@ tokens = [
    'INDENT',
    'DEDENT',
    'EOL',
-] + reserved.values()
+]
+tokens.extend( reserved.values() )
 
 literals = ":()[]=,@"
 
@@ -52,7 +53,7 @@ def t_longSTRING(t):
     r'"{3}(.|\n)*?"{3}' \
     r"|'{3}(.|\n)*?'{3}"
     t.type = 'STRING'
-    t.value = eval('u'+t.value)
+    t.value = evalstring(t.value)
     return t
 
 def t_STRING(t):
@@ -61,10 +62,13 @@ def t_STRING(t):
     r"|'[^']*?(?=\n)" \
     r'|"[^"]*?(?=\n)'
     if t.value[0] != t.value[-1] or len(t.value)==1:
-        t.value = eval( 'u'+t.value+t.value[0] )+'\n'
+        t.value = evalstring( t.value+t.value[0] )+'\n'
     else:
-        t.value = eval( 'u'+t.value)
+        t.value = evalstring( t.value )
     return t
+
+def evalstring( thestring ):
+    return eval(thestring)
 
 def t_PYCODE(t):
     r'`[^`]*`'

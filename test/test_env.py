@@ -8,7 +8,7 @@ class TestEnv( unittest.TestCase ):
         pass
 
     def testpath(self):
-        print env.path
+        print (env.path)
 
     def testsearchfile(self):
         filename = sys.argv[0]

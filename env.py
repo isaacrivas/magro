@@ -4,7 +4,7 @@ PATHVARNAME='MAGRO_PATH'
 path=['.']
 settings={}
 
-if os.environ.has_key(PATHVARNAME):
+if PATHVARNAME in os.environ:
     pathvar = os.environ[PATHVARNAME]
     for p in pathvar.split( os.pathsep ):
         path.append(p)

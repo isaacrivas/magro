@@ -211,7 +211,7 @@ def p_error(p):
         msg = "Error at token %s"%(p, )
     else:
         msg = "EOF reached prematurely"
-    print msg
+    print (msg)
     raise SyntaxError( msg )
 
 #Public interface
@@ -250,7 +250,7 @@ def importfile( filename, context ):
         import_cache[fullpath] = (filestat[stat.ST_MTIME],myctx,)
         context.update(myctx)
     else:
-        print "WARNING: %s file not found"%(filename,)
+        print ("WARNING: %s file not found"%(filename,))
         
 def extendorappend(l1,l2):
     if isinstance(l2,list):
