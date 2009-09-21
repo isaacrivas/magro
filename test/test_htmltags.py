@@ -1,6 +1,10 @@
 import unittest
 
-from StringIO import StringIO
+try:
+    from io import StringIO
+except:
+    from StringIO import StringIO
+
 from magro.parser import parse
 import os
 import sys
@@ -17,7 +21,7 @@ class TestHtmlTags( unittest.TestCase ):
         self.assertEqual( r, result )
 
     def test_path(self):
-        print env.path,
+        print (env.path)
 
     def testhtml(self):
         source = """

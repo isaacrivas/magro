@@ -1,6 +1,8 @@
 # coding=utf-8
-
-from StringIO import StringIO
+try:
+    from io import StringIO
+except:
+    from StringIO import StringIO
 from magro.parser import *
 from magro.ast import DefNode
 import os
@@ -191,7 +193,7 @@ def if( condition ):
         self.compare( "['a','b','c']: $value\n",'abc' )
         self.compare( "[A='a',B='b',C='c']: $key\n",'ABC' )
 
-        source = u"""
+        source = """
 
 cycle('A','B','C')
         
@@ -284,8 +286,8 @@ def native( param ):
         self.compare( source, result )
 
     def testnonascii(self):
-        source = u"'áéïóÙ'\n"
-        result = u"áéïóÙ"
+        source = "'áéïóÙ'\n"
+        result = "áéïóÙ"
         self.compare( source, result )
 
     def testpycodeimport(self):
