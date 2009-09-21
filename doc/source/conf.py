@@ -37,8 +37,8 @@ source_suffix = '.txt'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Magro'
-copyright = u'2009, Isaac Rivas'
+project = 'Magro'
+copyright = '2009, Isaac Rivas'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -172,8 +172,8 @@ htmlhelp_basename = 'Magrodoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Magro.tex', ur'Magro Documentation',
-   ur'Isaac Rivas', 'manual'),
+  ('index', 'Magro.tex', r'Magro Documentation',
+   r'Isaac Rivas', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

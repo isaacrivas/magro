@@ -1,7 +1,7 @@
-from lexer import *
-from ast import *
+from .lexer import *
+from .ast import *
 import ply.yacc as yacc
-import env
+from . import env
 import os
 import stat
 
@@ -232,7 +232,7 @@ def importfile( filename, context ):
     fullpath = env.searchfile( filename )
     if fullpath:
         filestat = os.stat(fullpath)
-        if import_cache.has_key( fullpath ) and import_cache[fullpath][0] >= filestat[stat.ST_MTIME]:
+        if fullpath in import_cache and import_cache[fullpath][0] >= filestat[stat.ST_MTIME]:
             context.update( import_cache[fullpath][1] )
             return
         

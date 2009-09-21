@@ -128,7 +128,7 @@ class DefNode( Node ):
         #search default values for undefined parameters
         i = 1
         for p in self.params:
-            if not context.has_key(p.name):
+            if p.name not in context:
                 if i<=len(params) and not params[i-1].name:
                     ivar = '$%d'%(i,)
                     context[p.name] = context[ivar]

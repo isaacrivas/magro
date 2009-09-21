@@ -1,7 +1,7 @@
 import magro.parser as parser
 import magro.env as env
 from magro.context import Context
-from cStringIO import StringIO
+from io import StringIO
 
 class TemplateBridge(object):
     def init(self, builder, theme=None, dirs=None):

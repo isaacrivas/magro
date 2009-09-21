@@ -19,9 +19,9 @@ class TestContext( unittest.TestCase ):
             a = 1
     
         c = Context({'base':A()})
-        self.assertTrue( c.has_key( 'base' ) )
-        self.assertTrue( c.has_key( 'base.a' ) )
-        self.assertFalse( c.has_key( 'base.b' ) )
+        self.assertTrue( 'base' in c )
+        self.assertTrue( 'base.a' in c )
+        self.assertFalse( 'base.b' in c )
             
     def testset(self):
         c = Context()
