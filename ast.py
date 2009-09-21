@@ -9,7 +9,7 @@ class Node:
     def eval( self, context ):
         return ''
 
-class BlockNode():
+class BlockNode( Node ):
     def __init__(self,code,level=0):
         self.code=[]
         self.code.extend(code)
@@ -183,7 +183,7 @@ class CallNode( Node ):
     def __repr__(self):
         return 'CallNode("%s")'%(self.name)    
 
-class EvalParam():
+class EvalParam( object ):
     def __init__( self, pos, name, value, islast ):
         self.pos = pos
         self.name = name
