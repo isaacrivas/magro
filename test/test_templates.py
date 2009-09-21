@@ -1,7 +1,4 @@
-try:
-    from io import StringIO
-except:
-    from StringIO import StringIO
+from io import StringIO
 from magro.parser import *
 from magro.ast import DefNode
 from magro.context import Context

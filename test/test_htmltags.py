@@ -1,10 +1,6 @@
 import unittest
 
-try:
-    from io import StringIO
-except:
-    from StringIO import StringIO
-
+from io import StringIO
 from magro.parser import parse
 import os
 import sys

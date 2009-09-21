@@ -1,7 +1,4 @@
-try:
-    from io import StringIO
-except:
-    from StringIO import StringIO
+from io import StringIO
 from magro.lexer import *
 import unittest
 

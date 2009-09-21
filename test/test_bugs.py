@@ -1,9 +1,6 @@
 # coding=utf-8
 
-try:
-    from io import StringIO
-except:
-    from StringIO import StringIO
+from io import StringIO
 from magro.parser import *
 from magro.ast import DefNode
 import os
