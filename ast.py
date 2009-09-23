@@ -8,6 +8,9 @@ class Node:
 
     def eval( self, context ):
         return ''
+    
+    def __repr__(self):
+        return 'Node'
 
 class BlockNode( Node ):
     def __init__(self,code,level=0):
@@ -30,6 +33,12 @@ class BlockNode( Node ):
         buffer.close()
         return result
 
+    def __repr__(self):
+        strcode = ''
+        for s in self.code:
+            strcode += '\n%s%s'%('  '*(self.level+1),s)
+        return 'BlockNode:%s'%(strcode,)
+
 
 class RootNode( Node ):
     def __init__(self, code=[], defs={} ):
@@ -47,6 +56,8 @@ class RootNode( Node ):
 
         return self.code.eval( context )
     
+    def __repr__(self):
+        return '\n*%s'%(self.code,)
 
 class StringNode( Node ):
     def __init__(self, value):
@@ -130,6 +141,10 @@ class DefNode( Node ):
         context['$'] = contents
         return self.code.eval(context)
 
+    def __repr__(self):
+        return 'DefNode(%s):%s'%(self.name,self.code)
+
+
 class ParamNode( Node ):
     def __init__(self, name, value=None):
         self.name = name
@@ -181,7 +196,7 @@ class CallNode( Node ):
             return symbol
     
     def __repr__(self):
-        return 'CallNode("%s")'%(self.name)    
+        return 'CallNode("%s"):%s'%(self.name,self.contents)    
 
 class EvalParam( object ):
     def __init__( self, pos, name, value, islast ):
@@ -242,6 +257,9 @@ class CycleNode( Node ):
         mycontext['$value'] = p.value
         return code.eval(mycontext)
 
+    def __repr__(self):
+        return 'CycleNode["%s"]:%s else:%s'%(self.params,self.code,self.elsecode)
+
 class GroupNode( Node ):
     def __init__(self,value):
         self.value=[]
@@ -249,6 +267,10 @@ class GroupNode( Node ):
 
     def eval(self,context):
         return self.value
+
+    def __repr__(self):
+        return 'GroupNode(%s)'%(self.value,)
+
 
 class PycodeNode( Node ):
     def __init__(self, code='', globals={} ):
@@ -266,6 +288,9 @@ class PycodeNode( Node ):
         else:
             return eval( self.code, self.globals, mycontext )
 
+    def __repr__(self):
+        return 'PycodeNode(%s)'%(self.code,)
+
 class TypeDefNode( Node ):
     def __init__(self, name, params, code):
         self.name = name
@@ -275,6 +300,9 @@ class TypeDefNode( Node ):
         mycontext = context.copy()
         mycontext['$object'] = target
         return self.defnode.execute( params, contents, mycontext )
+
+    def __repr__(self):
+        return 'TypeDefNode("%s"):%s'%(self.name,self.defnode,)
         
 def buildaccessor( locals ):
     def accessor(key):
