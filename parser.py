@@ -109,7 +109,7 @@ def p_cyclecall(p):
 def p_callsorblock(p):
     """callsorblock : EOL block
                     | exprs EOL"""
-    if hasattr(p[1],'__iter__'):
+    if isinstance(p[1],list):
         p[0] = BlockNode(p[1])
     else:
         p[0] = p[2]
