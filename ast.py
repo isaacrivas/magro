@@ -94,7 +94,7 @@ class DefNode( Node ):
         expanded = []
         for p in params:
             val = p.eval( context )
-            if hasattr(val,'__iter__'):
+            if isinstance(val,list):
                 expanded.extend( val )
             else:
                 expanded.append( p )
@@ -233,7 +233,7 @@ class CycleNode( Node ):
         for p in self.params:
             (name,val) = namevalue(p)
             
-            if hasattr(val,'__iter__') and not name:
+            if isinstance(val,list) and not name:
                 k=0
                 for p_ in val:
                     (name_,val_) = namevalue(p_)

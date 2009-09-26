@@ -123,13 +123,13 @@ class TestAst( unittest.TestCase ):
         self.assertEqual(node.eval({}),text)
 
     def testtypenode(self):
-        node = TypeDefNode( name='NoneType', params=[] , code=BlockNode([
-            StringNode('>Empty<(i.e. '),
+        node = TypeDefNode( name='str', params=[] , code=BlockNode([
+            StringNode('String ('),
             ImplicitNode('$object'),
             StringNode(')'),
         ]))
-        text = '>Empty<(i.e. None)'
-        self.assertEqual( node.execute( None, [], '', {} ),text )
+        text = 'String (Whoa!)'
+        self.assertEqual( node.execute( "Whoa!", [], '', {} ),text )
         
     def testcycleelse(self):
         code = BlockNode([ StringNode('True') ])
