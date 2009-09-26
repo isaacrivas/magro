@@ -15,6 +15,9 @@ class Context( dict ):
             return True
         except:
             return False
+
+    def __contains__( self, key ):
+        return self.has_key(key)
             
     def __getitem__(self,key):
         k = key
