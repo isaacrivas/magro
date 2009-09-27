@@ -273,7 +273,7 @@ def native( param ):
         self.compare( source, result )
 
     def testpycodecycle(self):
-        source = "[`xrange(1,6)`]: $value\n"
+        source = "[`range(1,6)`]: $value\n"
         result = "12345"
         self.compare( source, result )
 

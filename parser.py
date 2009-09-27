@@ -120,7 +120,7 @@ def p_elseblock(p):
                  | ':' cyclecall
                  | empty"""
     if len(p) > 2:
-        if hasattr(p[2],'__iter__'):
+        if isinstance(p[2],list):
             p[0] = BlockNode(p[2])
         elif len(p) > 3:
             p[0] = p[3]

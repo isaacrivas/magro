@@ -26,7 +26,7 @@ class BlockNode( Node ):
             context['$nextlevel'] = self.level+1
             if self.level: context['$previouslevel'] = self.level-1
         for s in self.code:
-            text = s.eval( context )
+            text = str(s.eval( context ))
             if text: buffer.write(text)
 
         result = buffer.getvalue()
@@ -94,7 +94,7 @@ class DefNode( Node ):
         expanded = []
         for p in params:
             val = p.eval( context )
-            if isinstance(val,list):
+            if isiterable(val):
                 expanded.extend( val )
             else:
                 expanded.append( p )
@@ -233,7 +233,7 @@ class CycleNode( Node ):
         for p in self.params:
             (name,val) = namevalue(p)
             
-            if isinstance(val,list) and not name:
+            if isiterable(val) and not name:
                 k=0
                 for p_ in val:
                     (name_,val_) = namevalue(p_)
@@ -277,7 +277,7 @@ class PycodeNode( Node ):
         self.code = code
         self.globals = globals
         if 'import' in self.code:
-            exec (self.code in self.globals)
+            exec (self.code, self.globals)
        
     def eval( self, context={} ):
         mycontext = context.copy()
@@ -331,3 +331,6 @@ def processtypebases(thetype, levels, currlevel):
         levels[currlevel].append(base.__name__)
     for base in thetype.__bases__:
         processtypebases(base, levels, currlevel+1)
+
+def isiterable(obj):
+    return hasattr(obj,'__iter__') and not isinstance(obj,''.__class__)
