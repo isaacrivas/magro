@@ -1,0 +1,17 @@
+import 'web'
+
+html4strict:
+    head:
+        title: "This is a sample page"
+        css('css/style.css')
+        js('js/jquery.js')
+    body:
+        [ posts ]:
+            blog_post( $value )
+
+            
+def blog_post( entry ):
+    div( class='blog-post'):
+        h1: entry.title
+        [ entry.paragraphs ]:
+            p: $value
