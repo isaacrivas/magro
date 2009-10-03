@@ -5,9 +5,12 @@ import sys
 import os.path
 from optparse import OptionParser
 
-def tool( thefile ):
+def tool( thefile, pyfile='' ):
     text = thefile.read()
-    return parser.parse( text, Context() )
+    context = Context()
+    if pyfile:
+        exec 'from %s import *'%(pyfile.rstrip('.py'),) in context
+    return parser.parse( text, context )
 
 if __name__ == '__main__':
     usage = 'usage: %prog [options] [filename]'
@@ -23,6 +26,8 @@ if __name__ == '__main__':
                          help='Set verbose mode' )
     opparser.add_option( '-s', action='append', dest='settings', metavar='KEY=VALUE',
                          help='Set magro.env.settings[KEY] = VALUE' )
+    opparser.add_option( '-p', dest='pyfile', metavar='PY_FILE',
+                         help='Run PY_FILE and use its globals directory as context' )
     (options, args) = opparser.parse_args()
 
     if options.outfile and options.fileext:
@@ -41,7 +46,7 @@ if __name__ == '__main__':
                 print 'Processing %s ...'%(filename,)
             thefile = open( filename, 'r' )
             try:
-                res = tool( thefile )
+                res = tool( thefile, options.pyfile )
             finally:
                 thefile.close()
             
@@ -64,5 +69,5 @@ if __name__ == '__main__':
             else:
                 result += res
     else:
-        result = tool( sys.stdin )
+        result = tool( sys.stdin, options.pyfile )
     print result
