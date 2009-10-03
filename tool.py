@@ -37,7 +37,7 @@ if __name__ == '__main__':
         filenames = args
         for filename in filenames:
             if options.verbose:
-                print 'Processing %s ...'%(filename,)
+                print('Processing %s ...'%(filename,))
             thefile = open( filename, 'r' )
             try:
                 res = tool( thefile )
@@ -52,7 +52,7 @@ if __name__ == '__main__':
                 if options.outdir:
                     fname = os.path.join( options.outdir, os.path.split(fname)[-1] )
                 if options.verbose:
-                    print 'Writing to %s...'%(fname,)
+                    print('Writing to %s...'%(fname,))
                 outputfile = open( fname, 'w' )
 
             if outputfile:
@@ -64,4 +64,4 @@ if __name__ == '__main__':
                 result += res
     else:
         result = tool( sys.stdin )
-    print result
+    print(result)
