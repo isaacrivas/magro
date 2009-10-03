@@ -1,12 +1,13 @@
 import magro.parser as parser
 import magro.env as env
+from magro.context import Context
 import sys
 import os.path
 from optparse import OptionParser
 
 def tool( thefile ):
     text = thefile.read()
-    return parser.parse( text, {} )
+    return parser.parse( text, Context() )
 
 if __name__ == '__main__':
     usage = 'usage: %prog [options] [filename]'
