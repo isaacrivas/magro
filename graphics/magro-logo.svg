@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="magro-logo.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.1683147"
+     inkscape:cx="218.53615"
+     inkscape:cy="534.49314"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1152"
+     inkscape:window-height="797"
+     inkscape:window-x="212"
+     inkscape:window-y="88"
+     inkscape:snap-guide="true"
+     inkscape:object-nodes="true"
+     inkscape:object-paths="true"
+     inkscape:snap-bbox="true"
+     gridtolerance="10000"
+     guidetolerance="10000">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2403"
+       dotted="true"
+       visible="true"
+       enabled="true"
+       spacingx="5px"
+       spacingy="5px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 250,519.36218 C 240,509.36218 220,514.36218 220,534.36218 C 220,554.36218 240,559.36218 250,549.36218 C 260,569.36218 235,584.36218 220,569.36218"
+       id="path2411"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/Users/null/Desktop/magro256.png"
+       inkscape:export-xdpi="89.302322"
+       inkscape:export-ydpi="89.302322" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 335,534.36218 C 335,509.36218 300,509.36218 300,534.36218 C 300,559.36218 335,559.36218 335,534.36218"
+       id="path3191"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/Users/null/Desktop/magro256.png"
+       inkscape:export-xdpi="89.302322"
+       inkscape:export-ydpi="89.302322" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 295,514.36218 C 275,514.36218 265,524.36218 265,554.36218"
+       id="path3193"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/null/Desktop/magro256.png"
+       inkscape:export-xdpi="89.302322"
+       inkscape:export-ydpi="89.302322" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 205,554.36218 C 205,548.04245 205,538.6014 205,534.36218 C 205,509.36218 170,509.36219 170,534.36218 C 170,554.36218 195,554.36218 195,544.36218"
+       id="path2383"
+       sodipodi:nodetypes="cscc"
+       inkscape:export-filename="/Users/null/Desktop/magro256.png"
+       inkscape:export-xdpi="89.302322"
+       inkscape:export-ydpi="89.302322" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 155,554.36218 C 155,548.04245 155,538.6014 155,534.36218 C 155,509.36218 120,509.36219 120,534.36218 C 120,534.36218 120,554.36218 120,554.36218"
+       id="path2385"
+       sodipodi:nodetypes="cscc"
+       inkscape:export-filename="/Users/null/Desktop/magro256.png"
+       inkscape:export-xdpi="89.302322"
+       inkscape:export-ydpi="89.302322" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 120,554.36218 C 120,548.04245 120,538.6014 120,534.36218 C 120,509.36218 85,509.36219 85,534.36218 C 85,534.36218 85,554.36218 85,554.36218"
+       id="path2387"
+       sodipodi:nodetypes="cscc"
+       inkscape:export-filename="/Users/null/Desktop/magro256.png"
+       inkscape:export-xdpi="89.302322"
+       inkscape:export-ydpi="89.302322" />
+  </g>
+</svg>
