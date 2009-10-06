@@ -1,3 +1,6 @@
+"""
+This module provides a program to render a template from the command line.
+"""
 import magro.parser as parser
 import magro.env as env
 from magro.context import Context
@@ -6,21 +9,26 @@ import os.path
 from optparse import OptionParser
 
 def tool( thefile, pyfile='' ):
+    """
+    Run the tool for the given file. Optionally use the globals defined in a
+    python as values in the context.
+    """
     text = thefile.read()
     context = Context()
     if pyfile:
-        exec 'from %s import *'%(pyfile.rstrip('.py'),) in context
+        exec 'from %s import *' % (pyfile.rstrip('.py'),) in context
     return parser.parse( text, context )
 
-if __name__ == '__main__':
+def run():
+    "Main program"
     usage = 'usage: %prog [options] [filename]'
     version = '1.0'
     opparser = OptionParser(usage=usage, version="%%prog %s"%(version,))
-    opparser.add_option( '-o','--output', dest='outfile',
+    opparser.add_option( '-o', '--output', dest='outfile',
                          help='Write output to FILE', metavar='FILE' )
-    opparser.add_option( '-d','--dir', dest='outdir',
+    opparser.add_option( '-d', '--dir', dest='outdir',
                          help='Write output to DIR directory (used with -x)', metavar='DIR' )
-    opparser.add_option( '-x','--ext', dest='fileext',
+    opparser.add_option( '-x', '--ext', dest='fileext',
                          help='Use input file name with EXT as extension as output filename', metavar='EXT' )
     opparser.add_option( '-v', action='store_true', dest='verbose', default=False,
                          help='Set verbose mode' )
@@ -36,14 +44,14 @@ if __name__ == '__main__':
     result = ''
     if len(args) > 0:
         if options.settings:
-            for s in options.settings:
-                (key,value,) = s.split('=')
+            for setting in options.settings:
+                (key, value) = setting.split('=')
                 env.settings[key] = value
     
         filenames = args
         for filename in filenames:
             if options.verbose:
-                print 'Processing %s ...'%(filename,)
+                print 'Processing %s ...' % (filename,)
             thefile = open( filename, 'r' )
             try:
                 res = tool( thefile, options.pyfile )
@@ -54,11 +62,11 @@ if __name__ == '__main__':
             if options.outfile:
                 outputfile = open( options.outfile, 'a' )
             elif options.fileext:
-                fname = '%s.%s'%(filename.rsplit('.',1)[0], options.fileext,)
+                fname = '%s.%s' % (filename.rsplit('.', 1)[0], options.fileext,)
                 if options.outdir:
                     fname = os.path.join( options.outdir, os.path.split(fname)[-1] )
                 if options.verbose:
-                    print 'Writing to %s...'%(fname,)
+                    print 'Writing to %s...' % (fname,)
                 outputfile = open( fname, 'w' )
 
             if outputfile:
@@ -71,3 +79,6 @@ if __name__ == '__main__':
     else:
         result = tool( sys.stdin, options.pyfile )
     print result
+
+if __name__ == '__main__':
+    run()
