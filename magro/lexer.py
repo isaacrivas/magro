@@ -75,6 +75,8 @@ def t_error(t):
     raise SyntaxError("syntax error on line %d near '%s'" % (t.lineno, t.value))
 
 def processindentation( lexer, blanks ):
+    """Calculates the current indentation level and generates artificial
+    tokens accordingly"""
     indentsize =  blanks and len( blanks ) or 0
         
     indentlevel = len(lexer.levels)
