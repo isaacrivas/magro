@@ -1,7 +1,7 @@
-import re
+"Magro's lexer using Ply"
 import ply.lex as lex
 
-reserved ={
+reserved = {
    'def' : 'DEF',
    'import' : 'IMPORT',
 }
@@ -80,34 +80,40 @@ def processindentation( lexer, blanks ):
     indentlevel = len(lexer.levels)
     if ( indentsize > lexer.levels[-1] ):
         lexer.levels.append( indentsize )
-        lexer.pendingtokens.append( createIndent( indentlevel ) )
+        lexer.pendingtokens.append( create_indent( indentlevel ) )
     else:
         while ( indentsize < lexer.levels[-1] ):
             lexer.levels.pop()
-            lexer.pendingtokens.append( createDedent( indentlevel ) )
+            lexer.pendingtokens.append( create_dedent( indentlevel ) )
 
-def createToken( type, value ):
-    indent_token = lex.LexToken()
-    indent_token.type = type
-    indent_token.value = value
-    indent_token.lineno = lex.lexer.lineno
-    indent_token.lexpos = lex.lexer.lexpos
-    return indent_token
+def create_token( token_type, value ):
+    "Used to create any kind of tokens"
+    token = lex.LexToken()
+    token.type = token_type
+    token.value = value
+    token.lineno = lex.lexer.lineno
+    token.lexpos = lex.lexer.lexpos
+    return token
 
-def createIndent( value ):
-    return createToken( 'INDENT', value )
+def create_indent( value ):
+    "Creates an INDENT token"
+    return create_token( 'INDENT', value )
 
-def createDedent( value ):
-    return createToken( 'DEDENT', value )
+def create_dedent( value ):
+    "Creates a DEDENT token"
+    return create_token( 'DEDENT', value )
 
 #Public interface    
    
 def tokenizer( input ):
+    "Used by the magro parser to tokenize the input string."
     lexer = lex.lex()
     lexer.levels = [ 0 ]
     lexer.pendingtokens = []
-    lexer.input( input.replace('\r','\n') +'\n' )
+    lexer.input( input.replace('\r', '\n') +'\n' )
     def tokenfunc_():
+        """Tokenize the function keeping proper account of artificial tokens
+        such as INDENT and DEDENT"""
         if len( lexer.pendingtokens ):
             return lexer.pendingtokens.pop(0)
 
