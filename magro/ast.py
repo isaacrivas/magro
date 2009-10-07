@@ -24,12 +24,12 @@ class Node:
 class BlockNode( Node ):
     """Represents a sequence of nodes that should be concatenated after their
     evaluation."""
-    def __init__(self,code,level=0):
-        self.code=[]
+    def __init__(self, code, level=0):
+        self.code = []
         self.code.extend(code)
         self.level = level
 
-    def eval(self,context,uselevel=False):
+    def eval(self, context, uselevel=False):
         """Evaluates each contained node and concatenates the result.
         
         The following implicit variables will be available in the context
@@ -39,51 +39,55 @@ class BlockNode( Node ):
         $nextlevel: $level+1
         $previouslevel: $level-1
         """
-        buffer = StringIO()
+        result_buf = StringIO()
         if uselevel:
             context = context.copy()
             context['$level'] = self.level
             context['$nextlevel'] = self.level+1
-            if self.level: context['$previouslevel'] = self.level-1
-        for s in self.code:
-            text = unicode(s.eval( context ))
-            if text: buffer.write(text)
+            if self.level:
+                context['$previouslevel'] = self.level-1
+        for node in self.code:
+            text = unicode(node.eval( context ))
+            if text:
+                result_buf.write(text)
 
-        result = buffer.getvalue()
-        buffer.close()
+        result = result_buf.getvalue()
+        result_buf.close()
         return result
 
     def __repr__(self):
         strcode = ''
-        for s in self.code:
-            strcode += '\n%s%s'%('  '*(self.level+1),s)
-        return 'BlockNode:%s'%(strcode,)
+        for node in self.code:
+            strcode += '\n%s%s' % ('  '*(self.level+1), node)
+        return 'BlockNode:%s' % (strcode,)
 
 
 class RootNode( Node ):
     "This should be the root node of the AST. It represents the whole template."
-    def __init__(self, code=[], defs={} ):
+    def __init__(self, code=None, defs=None ):
         self.code = BlockNode(code)
-        self.defs = defs
+        self.defs = defs or {}
        
-    def eval( self, context={} ):
+    def eval( self, context=None ):
         """Evaluates its single BlockNode child.
         
         Before evaluation, inserts the settings defined in env.settings to
         the context.
         """
         if context: 
-            context = context.copy()
-        for k,v in self.defs.items():
-            if k not in context:
-                context[k] = v
-        for k,v in env.settings.items():
-            context['settings.'+k] = v
+            mycontext = context.copy()
+        else:
+            mycontext = {}
+        for key, val in self.defs.items():
+            if key not in mycontext:
+                mycontext[key] = val
+        for key, val in env.settings.items():
+            mycontext['settings.'+key] = val
 
-        return self.code.eval( context )
+        return self.code.eval( mycontext )
     
     def __repr__(self):
-        return '\n*%s'%(self.code,)
+        return '\n*%s' % (self.code,)
 
 class StringNode( Node ):
     "Represents a string that will be output to the result as is."
@@ -91,10 +95,11 @@ class StringNode( Node ):
         self.value = value
        
     def eval( self, context ):
+        "Simply returns the value of this node."
         return self.value
 
     def __repr__(self):
-        return 'StringNode("%s")'%(self.value,)
+        return 'StringNode("%s")' % (self.value,)
 
         
 class ImplicitNode( Node ):
@@ -110,7 +115,7 @@ class ImplicitNode( Node ):
             return ''
 
     def __repr__(self):
-        return 'ImplicitNode("%s")'%(self.name,)
+        return 'ImplicitNode("%s")' % (self.name,)
 
 class DefNode( Node ):
     "Represents a macro definition that can be invoqued through a CallNode."
@@ -128,12 +133,12 @@ class DefNode( Node ):
         one level.)
         """
         expanded = []
-        for p in params:
-            val = p.eval( context )
+        for param in params:
+            val = param.eval( context )
             if hasattr(val,'__iter__'):
                 expanded.extend( val )
             else:
-                expanded.append( p )
+                expanded.append( param )
         return expanded
         
     def processparams(self, params, context ):
@@ -143,40 +148,40 @@ class DefNode( Node ):
         All defined values that are not declared in the macro definition are
         stored in the context as the $undeclared implicit variable.
         """
-        params = self.expandparams( params, context )
-        context['$all'] = params
+        exp_params = self.expandparams( params, context )
+        context['$all'] = exp_params
 
         #evaluate params and see if they were declared.
         undeclared = []
         i = 1
         iunnamed = 0
-        for p in params:
-            value = p.eval(context)
+        for param in exp_params:
+            value = param.eval(context)
             
-            context[ '$%d'%(i,) ] = value
-            if p.name:
-                context[ p.name ] = value
-                if p.name not in self.paramnames:
-                    p = ParamNode( p.name, StringNode(value) )
-                    undeclared.append(p)
+            context[ '$%d' % (i,) ] = value
+            if param.name:
+                context[ param.name ] = value
+                if param.name not in self.paramnames:
+                    ev_param = ParamNode( param.name, StringNode(value) )
+                    undeclared.append( ev_param )
             else:
                 iunnamed += 1
                 if iunnamed > len(self.params):
-                    p = ParamNode( None, StringNode(value) )
-                    undeclared.append(p)
-            i+=1
+                    ev_param = ParamNode( None, StringNode(value) )
+                    undeclared.append( ev_param)
+            i += 1
         context['$undeclared'] = undeclared
         
         #search default values for undefined parameters
         i = 1
-        for p in self.params:
-            if not context.has_key(p.name):
-                if i<=len(params) and not params[i-1].name:
-                    ivar = '$%d'%(i,)
-                    context[p.name] = context[ivar]
+        for param in self.params:
+            if not context.has_key( param.name ):
+                if i <= len(exp_params) and not exp_params[i-1].name:
+                    ivar = '$%d' % (i,)
+                    context[param.name] = context[ivar]
                 else:
-                    context[p.name] = p.eval(context)
-            i+=1
+                    context[param.name] = param.eval(context)
+            i += 1
 
     def execute( self, params, contents, context ):
         """Evaluates this macro with the given parameters and context. The
@@ -187,7 +192,7 @@ class DefNode( Node ):
         return self.code.eval(context)
 
     def __repr__(self):
-        return 'DefNode(%s):%s'%(self.name,self.code)
+        return 'DefNode(%s):%s' % (self.name, self.code)
 
 
 class ParamNode( Node ):
@@ -197,23 +202,23 @@ class ParamNode( Node ):
         self.name = name
         self.value = value
     
-    def eval(self,context):
+    def eval(self, context):
         """Returns the result of evaluating its value
         or '' if no value was given."""
         if self.value:
-            return self.value.eval(context)
+            return self.value.eval( context )
         else:
             return ''
 
     def __repr__(self):
-        return 'Param( "%s", %s )'%(self.name,self.value,)
+        return 'Param( "%s", %s )' % (self.name, self.value,)
             
 class CallNode( Node ):
     "Represents a call to a macro."
-    def __init__(self, name, params=[], contents=BlockNode([])):
+    def __init__(self, name, params=None, contents=None):
         self.name = name
-        self.params = params
-        self.contents = contents
+        self.params = params or []
+        self.contents = contents or BlockNode([])
        
     def eval( self, context ):
         """Searches the macro definition to be evaluated and executes it.
@@ -230,7 +235,7 @@ class CallNode( Node ):
         if not context.has_key(self.name):
             try:
                 symbol = context[DEF_PREFIX+self.name]
-            except:
+            except KeyError:
                 return ''
         else:
             symbol = context[ self.name ]
@@ -254,7 +259,7 @@ class CallNode( Node ):
             return symbol
     
     def __repr__(self):
-        return 'CallNode("%s"):%s'%(self.name,self.contents)    
+        return 'CallNode("%s"):%s' % (self.name, self.contents)    
 
 class EvalParam( object ):
     "Support class used in cycles evaluation."
@@ -270,53 +275,54 @@ class CycleNode( Node ):
     
     If a parameter evaluates to an empty string, invoques the optional else
     block. This allows this node to be used as a conditional branch."""
-    def __init__(self, params=[], code=BlockNode([]), elsecode=None ):
-        self.params = params
-        self.code = code
+    def __init__(self, params=None, code=None, elsecode=None ):
+        self.params = params or []
+        self.code = code or BlockNode([])
         self.elsecode = elsecode
     
     def eval( self, context ):
         """Evaluates all parameters and invoques the block of code that
         corresponds to its value."""
         result = ''
-        for p in self.paramsgenerator( context ):
-            if p.name or p.value:
-                result += self.execparam( p, self.code,context )
+        for param in self.paramsgenerator( context ):
+            if param.name or param.value:
+                result += self.execparam( param, self.code, context )
             elif self.elsecode:
-                result += self.execparam( p, self.elsecode,context )
+                result += self.execparam( param, self.elsecode, context )
         return result
         
     def paramsgenerator( self, context ):
         """Used by eval to iterate over each of the parameters. 
         Flattens the parameters one level if a parameter evaluates to an
         iterable and is not given a name."""
-        def namevalue(p):
-            if isinstance(p,Node):
-                return (p.name, p.eval(context))
+        def namevalue(param):
+            "Obtains a tuple with the name and value of the parameter."
+            if isinstance( param, Node):
+                return (param.name, param.eval(context))
             else:
-                return (None, p)
+                return (None, param)
 
-        i=0
-        ik = 0
+        i = 0
+        i_k = 0
         nparams = len(self.params)
-        for p in self.params:
-            (name,val) = namevalue(p)
+        for param in self.params:
+            (name, val) = namevalue(param)
             
             if hasattr(val,'__iter__') and not name:
-                k=0
-                for p_ in val:
-                    (name_,val_) = namevalue(p_)
+                k = 0
+                for param_ in val:
+                    (name_, val_) = namevalue(param_)
                     islast = ( i == nparams-1 ) and hasattr(k,'__len__') and (k==len(val)-1)
-                    yield EvalParam( ik+k, name_, val_, islast )
-                    k+=1
-                ik+=k
+                    yield EvalParam( i_k+k, name_, val_, islast )
+                    k += 1
+                i_k += k
             else:
                 islast = i == nparams-1
-                yield EvalParam( ik, name, val, islast )
-                ik+=1
-            i+=1
+                yield EvalParam( i_k, name, val, islast )
+                i_k += 1
+            i += 1
 
-    def execparam(self, p, code, context ):
+    def execparam(self, param, code, context ):
         """Evaluates the given block of code for the given param. It makes the
         following implicit values available in the context:
         
@@ -328,29 +334,30 @@ class CycleNode( Node ):
         $value: actual value of the parameter.
         """
         mycontext = context.copy()
-        mycontext['$index'] = p.pos
-        mycontext['$first'] = p.pos == 0 and 'True' or ''
-        mycontext['$last'] = p.islast and 'True' or ''
-        mycontext['$notlast'] = (not p.islast) and 'True' or ''
-        if p.name: mycontext['$key'] = p.name
-        mycontext['$value'] = p.value
+        mycontext['$index'] = param.pos
+        mycontext['$first'] = param.pos == 0 and 'True' or ''
+        mycontext['$last'] = param.islast and 'True' or ''
+        mycontext['$notlast'] = (not param.islast) and 'True' or ''
+        if param.name:
+            mycontext['$key'] = param.name
+        mycontext['$value'] = param.value
         return code.eval(mycontext)
 
     def __repr__(self):
-        return 'CycleNode["%s"]:%s else:%s'%(self.params,self.code,self.elsecode)
+        return 'CycleNode["%s"]:%s else:%s' % (self.params, self.code, self.elsecode)
 
 class GroupNode( Node ):
     "Groups a list of nodes so that they evaluate to a list."
-    def __init__(self,value):
-        self.value=[]
+    def __init__(self, value):
+        self.value = []
         self.value.extend(value)
 
-    def eval(self,context):
+    def eval(self, context):
         "Returns the group of nodes."
         return self.value
 
     def __repr__(self):
-        return 'GroupNode(%s)'%(self.value,)
+        return 'GroupNode(%s)' % (self.value,)
 
 
 class PycodeNode( Node ):
@@ -360,13 +367,15 @@ class PycodeNode( Node ):
     its imported symbols in the context of all subsecuent python expressions
     in the template.
     """
-    def __init__(self, code='', globals={} ):
+    COMMON_GLOBALS = {}
+    
+    def __init__(self, code='', globals=None ):
         self.code = code
-        self.globals = globals
+        self.globals = globals or PycodeNode.COMMON_GLOBALS
         if 'import' in self.code:
             exec self.code in self.globals
        
-    def eval( self, context={} ):
+    def eval( self, context=None ):
         """Evaluates the python expression. It uses the context as the map of
         local symbols available.
         
@@ -375,7 +384,7 @@ class PycodeNode( Node ):
         _: Function to access the context directly by a string key.
         context: context used for this call.
         """
-        mycontext = context.copy()
+        mycontext = context and context.copy() or {}
         mycontext['_'] = buildaccessor( context )
         mycontext['context'] = context
         if 'import' in self.code:
@@ -384,7 +393,7 @@ class PycodeNode( Node ):
             return eval( self.code, self.globals, mycontext )
 
     def __repr__(self):
-        return 'PycodeNode(%s)'%(self.code,)
+        return 'PycodeNode(%s)' % (self.code,)
 
 class TypeDefNode( Node ):
     "Represents a macro call to be called when an object of a certain type is found."
@@ -399,17 +408,21 @@ class TypeDefNode( Node ):
         return self.defnode.execute( params, contents, mycontext )
 
     def __repr__(self):
-        return 'TypeDefNode("%s"):%s'%(self.name,self.defnode,)
+        return 'TypeDefNode("%s"):%s' % (self.name, self.defnode,)
         
-def buildaccessor( locals ):
+def buildaccessor( ctx ):
+    "Creates the accessor function to be used in python expressions (_)"
     def accessor(key):
-        return locals[key]
+        "The actual accessor function."
+        return ctx[key]
     return accessor
 
-def gettypenames( object ):
-    thetype = type(object)
+def gettypenames( obj ):
+    """Obtains the name of the class of the object and of the classes it is a
+    subclass of."""
+    thetype = type( obj )
     if thetype.__name__ == 'instance':
-        thetype = object.__class__
+        thetype = obj.__class__
     
     result = [thetype.__name__]
     result.extend( gettypebases(thetype) )
@@ -417,11 +430,14 @@ def gettypenames( object ):
     return result
 
 def gettypebases(thetype):
+    "Obtains the list of parent classes of a type. Ordered from bottom to top."
     result = []
     processtypebases(thetype, result, 0)
     return [ t for l in result for t in l]
     
-def processtypebases(thetype, levels, currlevel):    
+def processtypebases(thetype, levels, currlevel):
+    """Gets the parents classes of a type recursively. Returns a list of list
+    where each position stores all the classes in that level of the tree."""
     while (currlevel >= len(levels)):
         levels.append([])
     for base in thetype.__bases__:
