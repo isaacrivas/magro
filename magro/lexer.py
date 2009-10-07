@@ -105,12 +105,12 @@ def create_dedent( value ):
 
 #Public interface    
    
-def tokenizer( input ):
+def tokenizer( the_input ):
     "Used by the magro parser to tokenize the input string."
     lexer = lex.lex()
     lexer.levels = [ 0 ]
     lexer.pendingtokens = []
-    lexer.input( input.replace('\r', '\n') +'\n' )
+    lexer.input( the_input.replace('\r', '\n') +'\n' )
     def tokenfunc_():
         """Tokenize the function keeping proper account of artificial tokens
         such as INDENT and DEDENT"""
