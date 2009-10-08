@@ -1,7 +1,8 @@
-from lexer import *
-from ast import *
+"Magro's parser using ply"
+from magro.lexer import *
+from magro.ast import *
 import ply.yacc as yacc
-import env
+import magro.env as env
 import os
 import stat
 
@@ -45,7 +46,7 @@ def p_definition(p):
 def p_typerenderer(p):
     "typerenderer : '@' SYMBOL paramdefs ':' callsorblock"
     node = TypeDefNode( name=p[2], params=p[3], code=p[5] )
-    p.parser.context[ '@%s'%(node.name,) ] = node
+    p.parser.context[ '@%s' % (node.name,) ] = node
     p[0] = node
     
 def p_block(p):
@@ -208,7 +209,7 @@ def p_nop(p):
 
 def p_error(p):
     if p:
-        msg = "Error at token %s"%(p, )
+        msg = "Error at token %s" % (p, )
     else:
         msg = "EOF reached prematurely"
     print msg
@@ -216,19 +217,22 @@ def p_error(p):
 
 #Public interface
 
-def compile(input):
+def compile(the_input):
+    "Compiles a template into an AST RootNode."
     parser = yacc.yacc()
     parser.context = {}
     parser.globals = {}
-    return parser.parse( tokenfunc=tokenizer(input) )
+    return parser.parse( tokenfunc=tokenizer(the_input) )
 
-def parse( input, context={} ):
-    root = compile(input)
-    return root.eval( context )
+def parse( the_input, context=None ):
+    "Compiles and evaluates a template."
+    root = compile(the_input)
+    return root.eval( context or {} )
 
 import_cache = {}
 
 def importfile( filename, context ):
+    "Imports a template file given the name of the file."
     fullpath = env.searchfile( filename )
     if fullpath:
         filestat = os.stat(fullpath)
@@ -236,25 +240,27 @@ def importfile( filename, context ):
             context.update( import_cache[fullpath][1] )
             return
         
-        f = open( fullpath )
-        text = f.read()
-        f.close()
+        import_file = open( fullpath )
+        text = import_file.read()
+        import_file.close()
 
         myctx = {}
-        pr = yacc.yacc()
-        pr.context = myctx
-        pr.globals = {}
-        pr.currentmodule = filename
-        pr.parse( tokenfunc=tokenizer(text) )
+        temp_yacc = yacc.yacc()
+        temp_yacc.context = myctx
+        temp_yacc.globals = {}
+        temp_yacc.currentmodule = filename
+        temp_yacc.parse( tokenfunc=tokenizer(text) )
         
-        import_cache[fullpath] = (filestat[stat.ST_MTIME],myctx,)
+        import_cache[fullpath] = (filestat[stat.ST_MTIME], myctx,)
         context.update(myctx)
     else:
-        print "WARNING: %s file not found"%(filename,)
+        print "WARNING: %s file not found" % (filename,)
         
-def extendorappend(l1,l2):
-    if isinstance(l2,list):
-        l1.extend(l2)
+def extendorappend( the_list, list_or_single):
+    """Extends the list of the first argument using the second argument, which
+    can be another list or a single element."""
+    if isinstance(list_or_single, list):
+        the_list.extend(list_or_single)
     else:
-        l1.append(l2)
-    return l1
+        the_list.append(list_or_single)
+    return the_list
