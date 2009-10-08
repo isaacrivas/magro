@@ -2,4 +2,5 @@ recursive-include lib *
 recursive-include doc/build/html *
 prune doc/build/html/.doctrees/
 exclude doc/build/html/.buildinfo
-include LICENSE.txt
+include LICENSE
+include README
