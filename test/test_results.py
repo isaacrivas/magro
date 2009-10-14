@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from StringIO import StringIO
-from magro.parser import *
+from magro import parse, compile
 from magro.ast import DefNode
 import os
 import unittest

@@ -1,5 +1,5 @@
 from StringIO import StringIO
-from magro.parser import *
+from magro import parse, compile
 from magro.ast import DefNode
 from magro.context import Context
 import os

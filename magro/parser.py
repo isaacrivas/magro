@@ -33,7 +33,7 @@ def p_statement(p):
 
 def p_import(p):
     "import : IMPORT STRING EOL"
-    importfile( p[2], p.parser.context )
+    p.parser.magro_parser.import_file( p[2], p.parser.context )
     
 def p_definition(p):
     "definition : DEF SYMBOL paramdefs ':' callsorblock"
@@ -217,44 +217,62 @@ def p_error(p):
 
 #Public interface
 
-def compile(the_input):
-    "Compiles a template into an AST RootNode."
-    parser = yacc.yacc()
-    parser.context = {}
-    parser.globals = {}
-    return parser.parse( tokenfunc=tokenizer(the_input) )
+class MagroParser(object):
+    "Used for creating templates."
+    def __init__( self, import_cache=None ):
+        self.import_cache = import_cache or DefaultCache()
+        self.parser = yacc.yacc()
+        self.parser.magro_parser = self
 
-def parse( the_input, context=None ):
-    "Compiles and evaluates a template."
-    root = compile(the_input)
-    return root.eval( context or {} )
+    def compile(self, the_input):
+        "Compiles a template into an AST RootNode."
+        self.parser.context = {}
+        self.parser.globals = {}
+        return self.parser.parse( tokenfunc=tokenizer(the_input) )
+    
+    def import_file( self, filename, context ):
+        "Imports a template file given the name of the file."
+        fullpath = env.searchfile( filename )
+        if fullpath:
+            filestat = os.stat(fullpath)
+            if self.import_cache.is_current( fullpath, filestat[stat.ST_MTIME] ):
+                context.update( self.import_cache.get_current(fullpath) )
+                return
+            
+            import_file = open( fullpath )
+            text = import_file.read()
+            import_file.close()
+    
+            myctx = {}
+            temp_yacc = yacc.yacc()
+            temp_yacc.magro_parser = self
+            temp_yacc.context = myctx
+            temp_yacc.globals = {}
+            temp_yacc.currentmodule = filename
+            temp_yacc.parse( tokenfunc=tokenizer(text) )
+            
+            self.import_cache.update( fullpath, filestat[stat.ST_MTIME], myctx)
+            context.update(myctx)
+        else:
+            print "WARNING: %s file not found" % (filename,)
 
-import_cache = {}
-
-def importfile( filename, context ):
-    "Imports a template file given the name of the file."
-    fullpath = env.searchfile( filename )
-    if fullpath:
-        filestat = os.stat(fullpath)
-        if import_cache.has_key( fullpath ) and import_cache[fullpath][0] >= filestat[stat.ST_MTIME]:
-            context.update( import_cache[fullpath][1] )
-            return
+class DefaultCache(object):
+    "Implements a simple cache using a map"
+    def __init__(self):
+        self.cache = {}
+    
+    def is_current(self, key, timestamp ):
+        "Evaluate if the current value of key is newer than the timestamp."
+        return (key in self.cache) and self.cache[key][0] >= timestamp
+    
+    def get_current(self, key):
+        "Get the current value of a key"
+        return self.cache[key][1]
         
-        import_file = open( fullpath )
-        text = import_file.read()
-        import_file.close()
-
-        myctx = {}
-        temp_yacc = yacc.yacc()
-        temp_yacc.context = myctx
-        temp_yacc.globals = {}
-        temp_yacc.currentmodule = filename
-        temp_yacc.parse( tokenfunc=tokenizer(text) )
-        
-        import_cache[fullpath] = (filestat[stat.ST_MTIME], myctx,)
-        context.update(myctx)
-    else:
-        print "WARNING: %s file not found" % (filename,)
+    def update(self, key, timestamp, value):
+        "Set the current value of a key"
+        self.cache[key] = (timestamp, value,)
+    
         
 def extendorappend( the_list, list_or_single):
     """Extends the list of the first argument using the second argument, which

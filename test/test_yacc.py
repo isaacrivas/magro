@@ -1,17 +1,17 @@
-from magro.parser import *
+from magro.parser import MagroParser
 import os
 import unittest
 
 class TestYacc( unittest.TestCase ):
     def setUp(self):
-        pass
+        self.parser = MagroParser()
         
     def accept(self, text):
-        parse( text )
+        self.parser.compile( text )
 
     def reject(self, text):
         try:
-            parse( text )
+            self.parser.compile( text )
             fail = True
         except Exception:
             fail = False

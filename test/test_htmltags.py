@@ -1,7 +1,7 @@
 import unittest
 
 from StringIO import StringIO
-from magro.parser import parse
+from magro import parse
 import os
 import sys
 
