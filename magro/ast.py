@@ -39,6 +39,7 @@ class BlockNode( Node ):
     """Represents a sequence of nodes that should be concatenated after their
     evaluation."""
     def __init__(self, code, level=0):
+        Node.__init__( self )
         self.code = []
         self.code.extend(code)
         self.level = level
@@ -79,6 +80,7 @@ class BlockNode( Node ):
 class RootNode( Node ):
     "This should be the root node of the AST. It represents the whole template."
     def __init__(self, code=None, defs=None ):
+        Node.__init__( self )
         self.code = BlockNode(code)
         self.defs = defs or {}
        
@@ -102,6 +104,7 @@ class RootNode( Node ):
 class StringNode( Node ):
     "Represents a string that will be output to the result as is."
     def __init__(self, value):
+        Node.__init__( self )
         self.value = value
        
     def eval( self, context ):
@@ -115,6 +118,7 @@ class StringNode( Node ):
 class ImplicitNode( Node ):
     "Represents an Implicit symbol to be looked up in the context."
     def __init__(self, name):
+        Node.__init__( self )
         self.name = name
        
     def eval( self, context ):
@@ -130,6 +134,7 @@ class ImplicitNode( Node ):
 class DefNode( Node ):
     "Represents a macro definition that can be invoqued through a CallNode."
     def __init__(self, name, params, code):
+        Node.__init__( self )
         self.name = name
         self.params = params
         self.paramnames = [ p.name for p in self.params ]
@@ -209,6 +214,7 @@ class ParamNode( Node ):
     """Represents a parameter used either in a macro definition
     or in a macro call."""
     def __init__(self, name, value=None):
+        Node.__init__( self )
         self.name = name
         self.value = value
     
@@ -226,6 +232,7 @@ class ParamNode( Node ):
 class CallNode( Node ):
     "Represents a call to a macro."
     def __init__(self, name, params=None, contents=None):
+        Node.__init__( self )
         self.name = name
         self.params = params or []
         self.contents = contents or BlockNode([])
@@ -286,6 +293,7 @@ class CycleNode( Node ):
     If a parameter evaluates to an empty string, invoques the optional else
     block. This allows this node to be used as a conditional branch."""
     def __init__(self, params=None, code=None, elsecode=None ):
+        Node.__init__( self )
         self.params = params or []
         self.code = code or BlockNode([])
         self.elsecode = elsecode
@@ -359,6 +367,7 @@ class CycleNode( Node ):
 class GroupNode( Node ):
     "Groups a list of nodes so that they evaluate to a list."
     def __init__(self, value):
+        Node.__init__( self )
         self.value = []
         self.value.extend(value)
 
@@ -380,6 +389,7 @@ class PycodeNode( Node ):
     COMMON_GLOBALS = {}
     
     def __init__(self, code='', globals=None ):
+        Node.__init__( self )
         self.code = code
         self.globals = globals or PycodeNode.COMMON_GLOBALS
         if 'import' in self.code:
@@ -408,6 +418,7 @@ class PycodeNode( Node ):
 class TypeDefNode( Node ):
     "Represents a macro call to be called when an object of a certain type is found."
     def __init__(self, name, params, code):
+        Node.__init__( self )
         self.name = name
         self.defnode = DefNode(name, params, code)
 

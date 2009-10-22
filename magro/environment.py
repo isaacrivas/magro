@@ -16,8 +16,6 @@ class Environment( object ):
     """
     Used to obtain templates using a given templates
     loader.
-    
-    TODO: Include a cache strategy into the configuration.
     """
     def __init__( self, loader = None, settings=None ):
         self.path = ['.']
@@ -30,7 +28,7 @@ class Environment( object ):
         self.parser = MagroParser( self.loader )
         self.settings = settings or {}
         
-    def get_template( template_id ):
+    def get_template( self, template_id ):
         """
         Load and build a template by its id (path,url,etc.)
         """
@@ -41,12 +39,17 @@ class Environment( object ):
 _DEFAULT_ENVIRONMENT = Environment()
 
 class Template( object ):
+    """
+    Represents a template that can be evaluated many times for
+    different context values.
+    """
     def __init__( self, template_source, environment=None ):
         self.template_source = template_source
         self.environment = environment or _DEFAULT_ENVIRONMENT
         self._ast = self.environment.parser.compile( template_source )
     
     def render( self, context=None ):
+        "Evaluate the template to a given context."
         ctx = Context()
         for key, value in  self.environment.settings.items():
             ctx['settings.'+key] = value

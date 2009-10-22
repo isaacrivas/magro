@@ -34,6 +34,14 @@ class BaseLoader( object ):
         timestamp = self.get_timestamp( key )
         if timestamp:
             self.cache[key] = (timestamp, value,)
+            
+    def get_source( self, template_id ):
+        "Get the source code of a template."
+        raise NotImplementedError('Implement for all subclasses')
+
+    def get_timestamp( self, template_id ):
+        "Return the current timestamp of a template if it can be calculated."
+        raise NotImplementedError('Implement for all subclasses')
 
 
 class DummyLoader( BaseLoader ):
@@ -63,7 +71,7 @@ class CompositeLoader( BaseLoader ):
                 return template_source
         return None
     
-    def get_timestamp( self, key ):
+    def get_timestamp( self, template_id ):
         "Get the timestamp of the template using the corresponding loader."
         for loader in self.loaders:
             timestamp = loader.get_timestamp( template_id )
