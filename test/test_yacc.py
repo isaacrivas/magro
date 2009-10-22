@@ -1,10 +1,12 @@
 from magro.parser import MagroParser
+from magro.loaders import DummyLoader
+
 import os
 import unittest
 
 class TestYacc( unittest.TestCase ):
     def setUp(self):
-        self.parser = MagroParser()
+        self.parser = MagroParser( DummyLoader() )
         
     def accept(self, text):
         self.parser.compile( text )

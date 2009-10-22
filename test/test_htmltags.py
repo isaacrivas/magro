@@ -1,23 +1,18 @@
 import unittest
 
 from StringIO import StringIO
-from magro import parse
+from magro import Environment, Template
+from magro.loaders import FileSystemLoader
 import os
 import sys
 
-import magro.env as env
-
-
 class TestHtmlTags( unittest.TestCase ):
     def setUp(self):
-        env.path.append("./lib")
+        self.env = Environment( FileSystemLoader(['./lib']) )
 
     def compare(self, text, result ):
-        r = parse( text )
-        self.assertEqual( r, result )
-
-    def test_path(self):
-        print env.path,
+        template = Template( text, self.env )
+        self.assertEqual( template.render(), result )
 
     def testhtml(self):
         source = """
@@ -44,7 +39,7 @@ html:
         'var a=1;'
 
 """
-        env.settings['html.indentsize'] = 4
+        self.env.settings['html.indentsize'] = 4
         result = """\
 <html>
     <body onload="">

@@ -3,7 +3,6 @@ This module contains all Abstract Syntax Tree representation classes that
 form a template.
 """
 from StringIO import StringIO
-import magro.env as env
 DEF_PREFIX = '!DEF!'
 
 __all__ = [
@@ -84,10 +83,8 @@ class RootNode( Node ):
         self.defs = defs or {}
        
     def eval( self, context=None ):
-        """Evaluates its single BlockNode child.
-        
-        Before evaluation, inserts the settings defined in env.settings to
-        the context.
+        """
+        Evaluates its single BlockNode child.
         """
         if context: 
             mycontext = context.copy()
@@ -96,8 +93,6 @@ class RootNode( Node ):
         for key, val in self.defs.items():
             if key not in mycontext:
                 mycontext[key] = val
-        for key, val in env.settings.items():
-            mycontext['settings.'+key] = val
 
         return self.code.eval( mycontext )
     

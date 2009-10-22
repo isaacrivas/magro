@@ -1,5 +1,5 @@
 from StringIO import StringIO
-from magro import parse, compile
+from magro import Template
 from magro.ast import DefNode
 from magro.context import Context
 import os
@@ -12,14 +12,14 @@ class TestTemplates( unittest.TestCase ):
     def testcompile(self):
         source = 'variable\n'
 
-        ast = compile( source )
-        res = ast.eval( { 'variable':123 } )
+        template = Template( source )
+        res = template.render( { 'variable':123 } )
         self.assertEqual( res, '123' )
 
-        res = ast.eval( { 'variable':124 } )
+        res = template.render( { 'variable':124 } )
         self.assertEqual( res, '124' )
 
-        res = ast.eval()
+        res = template.render()
         self.assertEqual( res, '' )
 
     def testiter(self):
@@ -31,22 +31,22 @@ class TestTemplates( unittest.TestCase ):
                 yield i+1
                 i+=1
 
-        ast = compile( source )
-        res = ast.eval( { 'iter':gen(3) } )
+        template = Template( source )
+        res = template.render( { 'iter':gen(3) } )
         self.assertEqual( res, '123' )
 
     def testarrayarg(self):
         source = '[array]:$value\n'
 
-        ast = compile( source )
-        res = ast.eval( { 'array':[1,2,3] } )
+        template = Template( source )
+        res = template.render( { 'array':[1,2,3] } )
         self.assertEqual( res, '123' )
 
     def testarrayargs(self):
         source = '[ a1, a2 ]: $value\n'
 
-        ast = compile( source )
-        res = ast.eval( { 'a1':[1,2,3],'a2':[4,5,6] } )
+        template = Template( source )
+        res = template.render( { 'a1':[1,2,3],'a2':[4,5,6] } )
         self.assertEqual( res, '123456' )
 
     def testarraygroup(self):
@@ -55,8 +55,8 @@ class TestTemplates( unittest.TestCase ):
     [$value]: $value
 """
 
-        ast = compile( source )
-        res = ast.eval( { 'a1':[1,2,3],'a2':[4,5,6] } )
+        template = Template( source )
+        res = template.render( { 'a1':[1,2,3],'a2':[4,5,6] } )
         self.assertEqual( res, '123456' )
 
     def testarraynestedgroup(self):
@@ -66,8 +66,8 @@ class TestTemplates( unittest.TestCase ):
         [$value]: $value
 """
 
-        ast = compile( source )
-        res = ast.eval( { 'a1':[[1],[2,3]],'a2':[[4,5],6] } )
+        template = Template( source )
+        res = template.render( { 'a1':[[1],[2,3]],'a2':[[4,5],6] } )
         self.assertEqual( res, '123456' )
 
     def testtypedef(self):
@@ -81,10 +81,10 @@ someAobject
                 self.name = name
                 self.value = value
         
-        ast = compile( source )
         context = Context({ 'someAobject': A('super','duper') })
 
-        res = ast.eval( context )
+        template = Template( source )
+        res = template.render( context )
         self.assertEqual( res, '>super=duper<' )
 
     def testtypedefinheritanceold(self):
@@ -96,11 +96,12 @@ someAobject
         class A(): pass
         class B(A): pass
         class C(B): pass
-        
-        ast = compile( source )
 
         context = Context({ 'someAobject': C() })
-        res = ast.eval( context )
+        
+        template = Template( source )
+        res = template.render( context )
+
         self.assertEqual( res, 'A' )
 
     def testtypedefinheritancenew(self):
@@ -113,10 +114,11 @@ someAobject
         class B(A): pass
         class C(B): pass
         
-        ast = compile( source )
-
         context = Context({ 'someAobject': C() })
-        res = ast.eval( context )
+        
+        template = Template( source )
+        res = template.render( context )
+        
         self.assertEqual( res, 'A' )
 
     def testtypedefinheritanceorder(self):
@@ -131,11 +133,11 @@ someAobject
         class B2(object): pass
         class C(B1,B2): pass
         class D(C): pass
-        
-        ast = compile( source )
-
         context = Context({ 'someAobject': D() })
-        res = ast.eval( context )
+        
+        template = Template( source )
+        res = template.render( context )
+        
         self.assertEqual( res, 'B2' )
     
     def testevaluationprecedence(self):
@@ -144,12 +146,12 @@ var
 def var():
     'abc'
 """
-        ast = compile( source )
+        template = Template( source )
 
-        res = ast.eval( {} )
+        res = template.render( {} )
         self.assertEqual( res, 'abc' )
 
-        res = ast.eval( { 'var':'123' } )
+        res = template.render( { 'var':'123' } )
         self.assertEqual( res, '123' )
 
         

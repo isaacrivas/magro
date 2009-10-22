@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from StringIO import StringIO
-from magro import parse, compile
+from magro import Template
 from magro.ast import DefNode
 import os
 import unittest
@@ -11,7 +11,8 @@ class TestResults( unittest.TestCase ):
         pass
         
     def compare(self, text, result ):
-        self.assertEqual( parse( text ), result )
+        template = Template( text )
+        self.assertEqual( template.render(), result )
         
     def testempty(self):
         source = ""

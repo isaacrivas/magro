@@ -2,7 +2,6 @@
 from magro.lexer import *
 from magro.ast import *
 import ply.yacc as yacc
-import magro.env as env
 import os
 import stat
 
@@ -219,8 +218,8 @@ def p_error(p):
 
 class MagroParser(object):
     "Used for creating templates."
-    def __init__( self, import_cache=None ):
-        self.import_cache = import_cache or DefaultCache()
+    def __init__( self, loader ):
+        self.loader = loader
         self.parser = yacc.yacc()
         self.parser.magro_parser = self
 
@@ -230,49 +229,27 @@ class MagroParser(object):
         self.parser.globals = {}
         return self.parser.parse( tokenfunc=tokenizer(the_input) )
     
-    def import_file( self, filename, context ):
+    def import_file( self, template_id, context ):
         "Imports a template file given the name of the file."
-        fullpath = env.searchfile( filename )
-        if fullpath:
-            filestat = os.stat(fullpath)
-            if self.import_cache.is_current( fullpath, filestat[stat.ST_MTIME] ):
-                context.update( self.import_cache.get_current(fullpath) )
-                return
+        if self.loader.is_dirty( template_id ):
+            template_source = self.loader.get_source( template_id )
             
-            import_file = open( fullpath )
-            text = import_file.read()
-            import_file.close()
-    
             myctx = {}
             temp_yacc = yacc.yacc()
             temp_yacc.magro_parser = self
             temp_yacc.context = myctx
             temp_yacc.globals = {}
-            temp_yacc.currentmodule = filename
-            temp_yacc.parse( tokenfunc=tokenizer(text) )
+            temp_yacc.currentmodule = template_id
+            temp_yacc.parse( tokenfunc=tokenizer(template_source) )
             
-            self.import_cache.update( fullpath, filestat[stat.ST_MTIME], myctx)
-            context.update(myctx)
+            context.update( myctx )
+            self.loader.update( template_id, myctx )
         else:
-            print "WARNING: %s file not found" % (filename,)
-
-class DefaultCache(object):
-    "Implements a simple cache using a map"
-    def __init__(self):
-        self.cache = {}
-    
-    def is_current(self, key, timestamp ):
-        "Evaluate if the current value of key is newer than the timestamp."
-        return (key in self.cache) and self.cache[key][0] >= timestamp
-    
-    def get_current(self, key):
-        "Get the current value of a key"
-        return self.cache[key][1]
-        
-    def update(self, key, timestamp, value):
-        "Set the current value of a key"
-        self.cache[key] = (timestamp, value,)
-    
+            cached = self.loader.get_current( template_id )
+            if cached:
+                context.update( cached )    
+            else:
+                print "WARNING: %s file not found" % (template_id,)
         
 def extendorappend( the_list, list_or_single):
     """Extends the list of the first argument using the second argument, which

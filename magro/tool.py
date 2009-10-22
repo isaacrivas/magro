@@ -1,14 +1,13 @@
 """
 This module provides a program to render a template from the command line.
 """
-import magro.parser as parser
-import magro.env as env
+from magro import Template, Environment
 from magro.context import Context
 import sys
 import os.path
 from optparse import OptionParser
 
-def tool( thefile, pyfile='' ):
+def tool( thefile, pyfile='', settings=None ):
     """
     Run the tool for the given file. Optionally use the globals defined in a
     python as values in the context.
@@ -17,7 +16,10 @@ def tool( thefile, pyfile='' ):
     context = Context()
     if pyfile:
         exec 'from %s import *' % (pyfile.rstrip('.py'),) in context
-    return parser.parse( text, context )
+
+    env = Environment(settings=settings)
+    template = Template( text, env )
+    return template.render( context )
 
 def run():
     "Main program"
@@ -33,7 +35,7 @@ def run():
     opparser.add_option( '-v', action='store_true', dest='verbose', default=False,
                          help='Set verbose mode' )
     opparser.add_option( '-s', action='append', dest='settings', metavar='KEY=VALUE',
-                         help='Set magro.env.settings[KEY] = VALUE' )
+                         help='Set Environment.settings[KEY] = VALUE' )
     opparser.add_option( '-p', dest='pyfile', metavar='PY_FILE',
                          help='Run PY_FILE and use its globals directory as context' )
     (options, args) = opparser.parse_args()
@@ -42,11 +44,12 @@ def run():
         opparser.error("options -o and -x are mutually exclusive")
     
     result = ''
+    settings = {}
     if len(args) > 0:
         if options.settings:
             for setting in options.settings:
                 (key, value) = setting.split('=')
-                env.settings[key] = value
+                settings[key] = value
     
         filenames = args
         for filename in filenames:
@@ -54,7 +57,7 @@ def run():
                 print 'Processing %s ...' % (filename,)
             thefile = open( filename, 'r' )
             try:
-                res = tool( thefile, options.pyfile )
+                res = tool( thefile, options.pyfile, settings )
             finally:
                 thefile.close()
             
@@ -77,7 +80,7 @@ def run():
             else:
                 result += res
     else:
-        result = tool( sys.stdin, options.pyfile )
+        result = tool( sys.stdin, options.pyfile, settings )
     print result
 
 if __name__ == '__main__':

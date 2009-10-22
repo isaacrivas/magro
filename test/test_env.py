@@ -1,5 +1,5 @@
 import unittest
-import magro.env as env
+from magro.environment import Environment
 import os
 import sys
 
@@ -7,16 +7,18 @@ class TestEnv( unittest.TestCase ):
     def setUp(self):
         pass
 
-    def testpath(self):
-        print env.path
+    def testdefault(self):
+        env = Environment()
 
     def testsearchfile(self):
         filename = sys.argv[0]
-        fullpath = env.searchfile( filename )
+        env = Environment()
+        loader = env.loader
+        fullpath = loader.search_file( filename )
         self.assertEqual( fullpath, os.path.abspath(filename) )
 
         filename = 'unknownfile'
-        fullpath = env.searchfile( filename )
+        fullpath = loader.search_file( filename )
         self.assertFalse( fullpath )
             
                 
