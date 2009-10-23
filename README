@@ -1,0 +1,43 @@
+magro 1.0
+23 oct 2009
+README
+===========
+
+This is a python module for evaluating templates in the
+magro language. It uses a very easy to learn syntax designed
+for great reuse and legibility.
+
+
+Dependencies
+------------
+This module should work with Python 2.5+ but not yet
+with Python 3+.
+
+Requires the ply library, which can be found at:
+http://www.dabeaz.com/ply/
+
+
+Installation
+------------
+You can install this package using easy_install:
+
+    easy_install magro
+
+Or if you have downloaded the .tar.gz archive:
+
+    tar xzvf magro-1.0.tar.gz
+    cd magro-1.0
+    python setup.py install
+
+
+Contact the author
+------------------
+Isaac Rivas
+http://isaacrivas.com
+isaac@isaacrivas.com
+
+
+License
+-------
+Not much to say, its Public Domain.
+
