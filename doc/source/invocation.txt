@@ -15,22 +15,51 @@ its output to another file.
 Python Library
 --------------
 
-To use Magro as a python library, import the ``magro.parser`` package:
+Template class
+~~~~~~~~~~~~~~
 
-    >>> import magro.parser as parser
+The ``Template`` class is used to transform a template string to an output string.
 
-Then call it's parse method to translate the template:
+Templates can be created using the ``Template`` constructor, which requires
+a ``string`` argument with the source code of the template:
 
-    >>> import magro.parser as parser
-    >>> parser.parse("'hello ' target \n", { 'target':'world' })
-    hello world
-    
-Or you can compile it and reuse it multiple times:
+        >>> template = Template("'hello ' target \n")
+        >>> template.render({ 'target' : 'world' })
+        u'hello world'
 
-    >>> import magro.parser as parser
-    >>> template = parser.compile("'hello ' target \n")
-    >>> template.eval({ 'target':'world' })
-    hello world
-    >>> template.eval({ 'target':'again' })
-    hello again
+The ``render`` method is used for evaluating the template to a ``dict`` or
+``Context`` (a ``dict`` subclass) containing the values for the symbols used
+in the template.
 
+Environment class
+~~~~~~~~~~~~~~~~~
+
+The central class of the Magro API is the ``Environment`` class, which is used
+to obtain instances of the ``Template`` class.
+
+The constructor of ``Environment`` has two optional arguments; a ``loader``
+that will be used to fetch the source code of the templates and a dictionary
+of settings, which is only a set of values that will be available for all the
+templates created using this environment.
+
+By default, the ``Environment`` will use a ``FileSystemLoader`` instance
+as loader.
+
+        >>> from magro import Environment
+        >>> env = Environment()
+        >>> env.loader
+        <magro.loaders.FileSystemLoader object at 0x00B46030>
+
+Templates can be obtained by using the get_template method which requires a
+``template_id`` that identifies the requested template. In the case of
+``FileSystemLoader``, the ``template_id`` is the name of the template file
+relative to any of the paths in its ``path`` attribute.
+
+        >>> env = Environment()
+        >>> template = env.get_template( 'welcome.html' )
+        >>> template.render()
+        u'This is the output of the template'
+
+Templates created by directly calling the ``Template`` constructor will share
+a common default ``Environment``, unless the ``environment`` argument of the
+constructor is especified.

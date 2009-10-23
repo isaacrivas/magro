@@ -15,14 +15,27 @@ The following values should be set for Magro to work:
 ``MAGRO_PATH``
     This environment variable is the list of directories that Magro
     will use to find the libraries imported by the templates.
-    
-    This value can be set programatically from Python code through
-    the ``macro.env.path`` variable:
 
-        >>> import magro.env as env
-        >>> env.path.append( '/path/to/magro/libraries' )
-        >>> env.path
+    It will only be used when the default Environment loader is used,
+    and can be set programatically when creating a FileSystemLoader or
+    after creating the default Environment object:
+
+        >>> from magro import Environment
+        >>> from magro.loaders import FileSystemLoader
+        >>> fileLoader = FileSystemLoader( ['.', '/path/to/magro/libraries'] )
+        >>> env = Environment( loader=fileLoader )
+        >>> env.loader.path
         ['.', '/path/to/magro/libraries']
+
+    Using the default loader:
+    
+        >>> from magro import Environment
+        >>> env = Environment()
+        >>> env.loader.path.append( '/path/to/magro/libraries' ) 
+        >>> env.loader.path
+        ['.', '/values/from/magro_path_variable', '/path/to/magro/libraries']
+
         
-    By default, this variable includes the current invocation
+    By default, this variable includes only the current invocation
     path (i.e. ``'.'``)
+    

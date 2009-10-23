@@ -357,10 +357,11 @@ when searching for a key contains dots ('.') inside it :
 
 For example::
 
-    >>> import magro.parser as parser
+    >>> from magro import Template
     >>> from magro.context import Context
-    >>> parser.parse( 'a.imag "i"\n', Context({'a': 10+5j}) )
-    '5.0i'
+    >>> template = Template( 'a.imag "i"' )
+    >>> template.render( Context({'a': 10+5j}) )
+    u'5.0i'
 
 When an referenced attribute of an object is callable, it will be called without arguments
 and the returned value will be used as the attribute's value.
