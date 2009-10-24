@@ -1,7 +1,7 @@
-#!python
+#!/usr/bin/env python
 
 """
-This module provides a program to render a template from the command line.
+This script provides a program to render a template from the command line.
 """
 from magro import Template, Environment
 from magro.context import Context
