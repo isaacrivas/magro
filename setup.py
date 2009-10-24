@@ -1,6 +1,8 @@
 from distutils.core import setup
 import sys
 
+from magro.environment import DEFAULT_TEMPLATES_LIBRARY_DIR
+
 setup(name='magro',
       version='1.0',
       author='Isaac Rivas',
@@ -12,7 +14,7 @@ setup(name='magro',
       provides=['magro'],
       packages=['magro'],
       package_dir={'magro':'magro'},
-      package_data={'magro': ['magro/templates/*']},
+      package_data={'magro': [DEFAULT_TEMPLATES_LIBRARY_DIR+'/*']},
       scripts=['scripts/magro_eval'],
       keywords='templates',
       license='Public Domain',
@@ -25,5 +27,5 @@ setup(name='magro',
                    'Topic :: Software Development'
                    'Topic :: Software Development :: Libraries',
                   ],
-      requires='ply'
+      requires=['ply']
      )

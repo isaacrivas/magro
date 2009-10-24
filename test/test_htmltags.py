@@ -8,7 +8,7 @@ import sys
 
 class TestHtmlTags( unittest.TestCase ):
     def setUp(self):
-        self.env = Environment( FileSystemLoader(['./lib']) )
+        self.env = Environment( FileSystemLoader(['./magro/templates']) )
 
     def compare(self, text, result ):
         template = Template( text, self.env )

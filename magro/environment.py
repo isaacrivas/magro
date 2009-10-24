@@ -4,6 +4,8 @@ used to load and create templates.
 
 """
 import os
+import sys
+import magro
 from magro.loaders import FileSystemLoader
 from magro.parser import MagroParser
 from magro.context import Context
@@ -11,6 +13,7 @@ from magro.context import Context
 __all__ = [ 'Environment', 'Template' ]
 
 PATHVARNAME = 'MAGRO_PATH'
+DEFAULT_TEMPLATES_LIBRARY_DIR = 'templates'
 
 class Environment( object ):
     """
@@ -19,6 +22,9 @@ class Environment( object ):
     """
     def __init__( self, loader = None, settings=None ):
         self.path = ['.']
+        self.path.extend( [ path + os.sep + DEFAULT_TEMPLATES_LIBRARY_DIR
+                           for path in sys.modules['magro'].__path__ ])
+        print self.path
         if os.environ.has_key(PATHVARNAME):
             path_value = os.environ[PATHVARNAME]
             for path_entry in path_value.split( os.pathsep ):
