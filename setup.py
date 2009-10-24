@@ -24,7 +24,7 @@ setup(name='magro',
                    'Operating System :: OS Independent',
                    'Programming Language :: Python :: 2',
                    'License :: Public Domain',
-                   'Topic :: Software Development'
+                   'Topic :: Software Development',
                    'Topic :: Software Development :: Libraries',
                   ],
       requires=['ply']
