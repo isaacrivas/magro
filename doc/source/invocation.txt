@@ -4,13 +4,13 @@ Invocation
 The Magro Tool
 --------------
 
-You can use the ``magro\tool.py`` script to evaluate your magro template,
+You can use the ``magro_eval`` script to evaluate your magro template,
 this script receives input from ``stdin`` and outputs to ``stdout`` by
 default; but you can tell it to receive its input from a file and to write
 its output to another file.
 ::
 
-    python magro/tool.py -o target.html source_template
+    magro_eval -o target.html source_template
 
 Python Library
 --------------
