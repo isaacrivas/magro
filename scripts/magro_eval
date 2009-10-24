@@ -1,3 +1,5 @@
+#!python
+
 """
 This module provides a program to render a template from the command line.
 """
