@@ -24,7 +24,6 @@ class Environment( object ):
         self.path = ['.']
         self.path.extend( [ path + os.sep + DEFAULT_TEMPLATES_LIBRARY_DIR
                            for path in sys.modules['magro'].__path__ ])
-        print self.path
         if os.environ.has_key(PATHVARNAME):
             path_value = os.environ[PATHVARNAME]
             for path_entry in path_value.split( os.pathsep ):
