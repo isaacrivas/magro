@@ -32,13 +32,18 @@ class ResponseMiddleware:
 
 def render_to_response( template_id, context=None ):
     env = _init_magro_env()
-    Template = env.get_template( template_id )
+    template = env.get_template( template_id )
     
     ctx = context
     while hasattr( ctx, 'dicts' ):
         ctx = ctx.dicts[0]
     
-    return HttpResponse( Template.render( Context(ctx) ) )
+    return HttpResponse( template.render( Context(ctx) ) )
+
+def render_from_text( template_source, context=None ):
+    env = _init_magro_env()
+    template = Template( template_source, env )
+    return template.render( context )
 
 def _init_magro_env():
     globs = globals()
